@@ -17,3 +17,9 @@ graph.create(Michael_dates_Felice)
 graph.create(Anny_knows_Michael)
 
 # Visit http://localhost:7474 to view the GUI and practice CypherQL
+
+# Get every person who knows "Felice"
+# MATCH (a:Person)-[*]->(b:Person) WHERE b.name="Felice" RETURN a.name, b.name
+
+# Get every person who knows anyone
+# MATCH (a:Person)-[k:Knows]->(b:Person) RETURN a.name,k.Since, b.name
