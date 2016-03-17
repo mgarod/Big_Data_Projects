@@ -84,7 +84,7 @@ def generate_organizations():
 
 def generate_projects():
     """User_id, project"""
-    proj_file = open("proj.csv", "w")
+    proj_file = open("projects.csv", "w")
     for i in range(1, USERMAX+1):
         for j in range(r.randint(3, 10)):
             proj_file.write(i.__str__())
@@ -128,9 +128,9 @@ def generate_interests():
 
 
 def generate_distances():
+    """Organization 1, Organization 2, Distance"""
     distance_file = open("distance.csv", "w")
     key_list = orgs.keys()
-
     for i in orgs.keys():
         key_list.remove(i)
         for j in key_list:
