@@ -8,9 +8,9 @@ import pandas as pd
 class Interface:
     def __init__(self):
         self.Actions = {
-            1: q1.skill_match(),
-            2: q2.trusted_colleague(),
-            3: q3.user_lookup()
+            1: q1.skill_match,
+            2: q2.trusted_colleague,
+            3: q3.user_lookup
         }
 
         Loaders.load_all()
@@ -32,6 +32,6 @@ class Interface:
         print df.to_string(index=False)
 
         user_input = valid.validate_num(keys)
-        self.Actions[user_input]
+        self.Actions[user_input]()
 
 interface = Interface()
