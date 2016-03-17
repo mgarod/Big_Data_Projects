@@ -58,13 +58,24 @@ def generate_all():
 def generate_names():
     """User_id, first name, last name"""
     name_file = open("names.csv", "w")
+    l = list()
+
     for i in range(1,USERMAX+1):
         name_file.write(i.__str__())
         name_file.write(',')
-        name_file.write(r.choice(first_names))
+
+        fn = ""
+        ln = ""
+
+        while fn+ln in l:
+            fn = r.choice(first_names)
+            ln = r.choice(last_names)
+
+        name_file.write(fn)
         name_file.write(',')
-        name_file.write(r.choice(last_names))
+        name_file.write(ln)
         name_file.write('\n')
+        l.append(fn+ln)
     name_file.close()
 
 
@@ -91,6 +102,7 @@ def generate_projects():
             proj_file.write(',')
             proj_file.write(r.choice(string.letters).upper())
             proj_file.write('\n')
+    proj_file.close()
 
 
 def generate_skills():
@@ -108,6 +120,7 @@ def generate_skills():
                 skills_file.write(r.randint(1, 10).__str__())
                 skills_file.write('\n')
                 l.append(x)
+    skills_file.close()
 
 
 def generate_interests():
@@ -125,6 +138,7 @@ def generate_interests():
                 interests_file.write(r.randint(1, 10).__str__())
                 interests_file.write('\n')
                 l.append(x)
+    interests_file.close()
 
 
 def generate_distances():
@@ -140,6 +154,7 @@ def generate_distances():
             distance_file.write(',')
             distance_file.write(r.randint(1, 40).__str__())
             distance_file.write('\n')
+    distance_file.close()
 
 
 generate_all()
