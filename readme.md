@@ -20,10 +20,11 @@ COLLEAUGE GRAPH (Neo4j)
   * People nodes
   * bidirectional "Worked with" edges
 	
-COMPANY GRAPH
+COMPANY GRAPH(completed with cypher)
   * Company nodes
   * weighted bidirectional "Distance" edges
   * bidirectional "Less than 10 miles" edges
+  * **csv File require header Orangization 1, Organization 2, Distance
 
 
 ## Queries Pseudocode
