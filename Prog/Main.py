@@ -5,6 +5,7 @@ import Query3 as q3
 import Validators as valid
 import pandas as pd
 
+
 class Interface:
     def __init__(self):
         self.Actions = {
@@ -23,7 +24,7 @@ class Interface:
                     "Execute Query 2",
                     "Execute Query 3"]
         keys = range(1,len(commands)+1)
-        df = pd.DataFrame({"Enter Key": keys,"Command List":commands},
+        df = pd.DataFrame({"Enter Key": keys, "Command List": commands},
                           index=keys)
 
         print
