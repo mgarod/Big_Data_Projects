@@ -1,2 +1,6 @@
+import CassandraLoader as cload
+
 def load_all():
-    pass
+    cload.load_cassandra()
+
+

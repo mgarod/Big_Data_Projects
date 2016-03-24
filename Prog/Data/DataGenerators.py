@@ -64,8 +64,8 @@ def generate_names():
         name_file.write(i.__str__())
         name_file.write(',')
 
-        fn = "fn"
-        ln = "ln"
+        fn = r.choice(first_names)
+        ln = r.choice(last_names)
 
         while fn+ln in l:
             fn = r.choice(first_names)
@@ -76,6 +76,7 @@ def generate_names():
         name_file.write(ln)
         name_file.write('\n')
         l.append(fn+ln)
+
     name_file.close()
 
 

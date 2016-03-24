@@ -23,7 +23,7 @@ class Interface:
         commands = ["Execute Query 1",
                     "Execute Query 2",
                     "Execute Query 3"]
-        keys = range(1,len(commands)+1)
+        keys = range(1, len(commands)+1)
         df = pd.DataFrame({"Enter Key": keys, "Command List": commands},
                           index=keys)
 
