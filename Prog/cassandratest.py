@@ -3,6 +3,12 @@ from cassandra.query import dict_factory
 
 cluster = Cluster()
 session = cluster.connect()
+session.execute(
+    """
+    CREATE KEYSPACE IF NOT EXISTS local
+    WITH replication = {'class':'SimpleStrategy', 'replication_factor': 1}
+    """
+) # Replication factor must be set to 1 because we are working on only 1 node
 session.set_keyspace("local")
 
 # Prepare a statement to execute - Drop Table
