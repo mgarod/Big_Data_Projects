@@ -55,6 +55,7 @@ def load_names():
 
     with open('Data/names.csv', 'r') as f:
         csvfile = csv.reader(f)
+        next(csvfile, None)  # Skip headers
         for row in csvfile:
             insert_stmt = insert_stmt.bind([int(row[0]), row[1], row[2]])
             session.execute(insert_stmt)
@@ -71,6 +72,7 @@ def load_orgs():
 
     with open('Data/orgs.csv', 'r') as f:
         csvfile = csv.reader(f)
+        next(csvfile, None)  # Skip headers
         for row in csvfile:
             d = {row[1]: row[2]}
             update_stmt = update_stmt.bind([d, int(row[0])])
@@ -88,6 +90,7 @@ def load_projects():
 
     with open('Data/projects.csv', 'r') as f:
         csvfile = csv.reader(f)
+        next(csvfile, None)  # Skip headers
         for row in csvfile:
             update_stmt = update_stmt.bind([{row[1]}, int(row[0])])
             session.execute(update_stmt)
@@ -104,6 +107,7 @@ def load_skills():
 
     with open('Data/skills.csv', 'r') as f:
         csvfile = csv.reader(f)
+        next(csvfile, None)  # Skip headers
         for row in csvfile:
             update_stmt = update_stmt.bind([row[1], int(row[2]), int(row[0])])
             session.execute(update_stmt)
@@ -120,6 +124,7 @@ def load_interests():
 
     with open('Data/interests.csv', 'r') as f:
         csvfile = csv.reader(f)
+        next(csvfile, None)  # Skip headers
         for row in csvfile:
             update_stmt = update_stmt.bind([row[1], int(row[2]), int(row[0])])
             session.execute(update_stmt)
