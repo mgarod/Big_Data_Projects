@@ -13,7 +13,6 @@ def load_cassandra():
     load_projects()
     load_skills()
     load_interests()
-    print_table_map()
 
 
 def setup_session():
