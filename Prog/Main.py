@@ -32,7 +32,7 @@ class Interface:
         print "--------------------------------------------------"
         print df.to_string(index=False)
 
-        user_input = valid.validate_num(keys)
+        user_input = valid.validate_command(keys)
         self.Actions[user_input]()
 
 interface = Interface()

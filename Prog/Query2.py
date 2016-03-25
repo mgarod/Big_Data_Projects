@@ -1,7 +1,7 @@
 from py2neo import Graph
 
 
-def Trusted_colleague(Fname, Lname):
+def trusted_colleague(Fname, Lname):
     graph = Graph()  # Makes connection to http://127.0.0.1:7474
     cypher = graph.cypher
     result = cypher.execute(
