@@ -44,7 +44,7 @@ def query1(nameF, nameL ):
             if list.__contains__(x[5]):
                continue
 
-           #find p in x# namelist = set() # reset the interest set
+           #formatting output
             if (current[0] == x[2]) :
 
                 if(not namelist.__contains__(current[0])):
