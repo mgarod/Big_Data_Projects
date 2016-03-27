@@ -1,8 +1,9 @@
 from py2neo import Graph
 
 
+def query1():
+    # Get nameF, nameL within this function
 
-def query1(nameF, nameL ):
     graph = Graph()  # Makes connection to http://127.0.0.1:7474
     cypher = graph.cypher
     list = set()

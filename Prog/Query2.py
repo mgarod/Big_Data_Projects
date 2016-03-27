@@ -1,9 +1,11 @@
 from py2neo import Graph
 
+
 graph = Graph()  # Makes connection to http://127.0.0.1:7474
 
-def query1(nameF, nameL ):
 
+def query2():
+    # Get nameF, nameL within this function
 
     list = set()
     namelist = set()

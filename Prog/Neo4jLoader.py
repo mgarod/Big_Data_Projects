@@ -1,9 +1,28 @@
 from py2neo import Graph
+import os
+
 
 graph = Graph()  # Makes connection to http://127.0.0.1:7474
 cypher = graph.cypher
 
+
 def load_neo4j():
+    x = os.path.realpath(__file__)  # Get Path to Neo4jLoader.py
+    x = x[:-15]  # Get Path to folder containing Neo4jLoader.py
+
+    # Query with relative path to csv file
+    query = """
+        LOAD CSV WITH HEADERS FROM "file://%s/Data/names.csv" as line
+        MERGE (p:Person
+            {User_id: TOINT(line.User_id),
+            Fname: upper(line.First_Name),
+            Lname: upper(line.Last_Name)
+            }
+        )
+        """
+    query %= x
+    print query
+
     create_distanceGraph()
     create_PersonGraph()
     create_ProjectGraph()
@@ -41,6 +60,7 @@ def create_PersonGraph():
                    "MERGE (p:Person { User_id: TOINT(line.User_id),"
                    "Fname: upper(line.`first name`), Lname: upper(line.`last name`) } ) ")
 
+
 def create_ProjectGraph():
     # creating project graph
     cypher.execute("LOAD CSV WITH HEADERS FROM "
@@ -52,6 +72,7 @@ def create_ProjectGraph():
                    "'file:////home//ryan/Desktop/BigData/code/projects.csv' AS line "
                    "MATCH (a:Person { User_id: TOINT(line.User_id) }),(b:projects { projectname:line.Projects })"
                    "MERGE (a)-[:Working_on]->(b)")
+
 
 def create_Relationship():
     # creating relationships between person and organization
@@ -66,6 +87,7 @@ def create_Relationship():
                    "MATCH (thisPerson{ User_id: TOINT(line.User_id) })-[:Working_on]->(project)<-[:Working_on]-(Person)"
                    "WHERE NOT (thisPerson)-[:Working_on]-(Person)"
                    "MERGE(thisPerson)-[:colleague]-(Person)")
+
 
 def create_InterestGraph():
     # creating interest node

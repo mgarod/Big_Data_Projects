@@ -8,7 +8,7 @@ session = cluster.connect("local")
 session.row_factory = dict_factory
 
 
-def user_lookup():
+def query3():
     u_id = valid.validate_num("$ Enter a user_id: ")
 
     if user_exists(u_id):
@@ -40,6 +40,7 @@ def user_exists(uid):
         return True
     else:
         return False
+
 
 def select_user(uid):
     """
@@ -103,6 +104,7 @@ def map_to_list(interests_map):
         num = interests_map[name]
         l.append(name.encode("ascii") + " (" + str(num) + ")")
     return l
+
 
 def print_list(interest_list, type):
     print "{:15} | {:25}".format(type, interest_list[0], width=15)

@@ -9,9 +9,9 @@ import pandas as pd
 class Interface:
     def __init__(self):
         self.Actions = {
-            1: q1.skill_match,
-            2: q2.trusted_colleague,
-            3: q3.user_lookup
+            1: q1.query1,
+            2: q2.query2,
+            3: q3.query3
         }
 
         Loaders.load_all()

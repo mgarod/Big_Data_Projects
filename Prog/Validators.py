@@ -23,6 +23,12 @@ def validate_command(keys):
 
 
 def validate_num(message):
+    """
+    Guarantee that the user enters a non-negative number
+
+    :param message: Prompt to display to user
+    :return:
+    """
     good_number = False
     num = None
 

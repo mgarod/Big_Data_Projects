@@ -58,7 +58,7 @@ def generate_all():
 def generate_names():
     """User_id, first name, last name"""
     name_file = open("names.csv", "w")
-    name_file.write("User_id,First Name,Last Name\n")
+    name_file.write("User_id,FirstName,LastName\n")
     l = list()
 
     for i in range(1,USERMAX+1):
@@ -84,7 +84,7 @@ def generate_names():
 def generate_organizations():
     """User_id, organization, organization type"""
     orgs_file = open("orgs.csv", "w")
-    orgs_file.write("User_id,Organization,Organization Type\n")
+    orgs_file.write("User_id,Organization,OrganizationType\n")
     for i in range(1, USERMAX+1):
         org = r.choice(orgs.keys())
         orgs_file.write(i.__str__())
@@ -112,7 +112,7 @@ def generate_projects():
 def generate_skills():
     """User_id, Skill, Skill level"""
     skills_file = open("skills.csv", "w")
-    skills_file.write("User_id,Skill,Skill level\n")
+    skills_file.write("User_id,Skill,Skilllevel\n")
     for i in range(1, USERMAX+1):
         l = list()
         for j in range(r.randint(3, 10)):
@@ -131,7 +131,7 @@ def generate_skills():
 def generate_interests():
     """User_id, Interest, Interest level"""
     interests_file = open("interests.csv", "w")
-    interests_file.write("User_id,Interest,Interest level\n")
+    interests_file.write("User_id,Interest,Interestlevel\n")
     for i in range(1, USERMAX+1):
         l = list()
         for j in range(r.randint(3, 10)):
@@ -150,7 +150,7 @@ def generate_interests():
 def generate_distances():
     """Organization 1, Organization 2, Distance"""
     distance_file = open("distance.csv", "w")
-    distance_file.write("Organization 1,Organization 2,Distance\n")
+    distance_file.write("Organization1,Organization2,Distance\n")
     key_list = orgs.keys()
     for i in orgs.keys():
         key_list.remove(i)
