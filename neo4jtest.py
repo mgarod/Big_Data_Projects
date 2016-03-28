@@ -20,20 +20,28 @@ graph.create(Felice_knows_Jackie)
 graph.create(Michael_dates_Felice)
 graph.create(Anny_knows_Michael)
 
-path = os.path.realpath(__file__)
 query = """
-    LOAD CSV WITH HEADERS FROM "file:///%s/Data/names.csv" as line
-    MERGE (p:Person
-        {User_id: TOINT(line.User_id),
-        Fname: upper(line.First_Name),
-        Lname: upper(line.Last_Name)
-        }
-    )
-    """
+    MATCH (a:Person)-[k:Knows]->(b:Person)
+    WHERE b.name="Michael"
+    RETURN a.name, b.name
+"""
 
-query %= path
+print graph.cypher.execute(query)
 
-print query
+# path = os.path.realpath(__file__)
+# query = """
+#     LOAD CSV WITH HEADERS FROM "file:///%s/Data/names.csv" as line
+#     MERGE (p:Person
+#         {User_id: TOINT(line.User_id),
+#         Fname: upper(line.First_Name),
+#         Lname: upper(line.Last_Name)
+#         }
+#     )
+#     """
+#
+# query %= path
+#
+# print query
 
 # Visit http://localhost:7474 to view the GUI and practice CypherQL
 

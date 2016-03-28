@@ -88,14 +88,14 @@ def print_result(result):
     print "-"*50
     print_list(skills, "Skills")
     print "-"*50
-    print_list(interests,"Interests")
+    print_list(interests, "Interests")
 
 
 def projs_to_str(l):
-    str = ""
+    a_str = ""
     for i in l:
-        str += i.encode("ascii")+" "
-    return str
+        a_str += i.encode("ascii")+" "
+    return a_str
 
 
 def map_to_list(interests_map):
@@ -106,13 +106,10 @@ def map_to_list(interests_map):
     return l
 
 
-def print_list(interest_list, type):
-    print "{:15} | {:25}".format(type, interest_list[0], width=15)
+def print_list(interest_list, i_type):
+    print "{:15} | {:25}".format(i_type, interest_list[0], width=15)
 
     i = 1
     while i < len(interest_list):
         print "{:15} | {}".format("", interest_list[i], width=15)
         i += 1
-
-
-user_lookup()
