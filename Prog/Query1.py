@@ -1,4 +1,5 @@
 from py2neo import Graph
+import sys
 import Validators as valid
 import Query3
 
@@ -6,28 +7,27 @@ def query1():
     # Get nameF, nameL within this function
     u_id = valid.validate_num("$ Enter a user_id: ")
 
-    if Query3.user_exists(u_id):
-        print u_id
-    else:
+    if not Query3.user_exists(u_id):
         print "User ID {} was not found".format(u_id)
-
+        return
 
     graph = Graph()  # Makes connection to http://127.0.0.1:7474
     cypher = graph.cypher
-    list = set()
+    mylist = set()
     namelist = set()
-
 
     #get the resource data from the query
     result = cypher.execute(
-                    "Match (person:Person {Fname: {name1}, Lname: { name2}})-[r:Work_at]->(job) "
+                    "Match (person:Person {User_id: {uid}})-[r:Work_at]->(job) "
                     "Match (job)-[r1:DISTANCE]-(closeCompany) where r1.closeby = true "
                     "Match (closePerson)-[:Work_at]->(closeCompany) "
                     "Match (closePerson)-[ri:interested_in]->(cpInterest)<-[:interested_in]-(person) "
                     "return closePerson.Fname AS PersonF, closePerson.Lname AS PersonL"
                     ", closePerson.User_id AS Personid, TOINT(cpInterest.level) AS level,closeCompany.name AS company  , "
                     "cpInterest.interestName order BY TOINT( cpInterest.level) DESC",
-                    name1 = nameF, name2 = nameL)
+                    uid=u_id)
+
+    sys.stdout.flush()
 
     #get ranking order
     table = {}
@@ -41,19 +41,17 @@ def query1():
     sortedarray = table.items()
     sortedarray.sort(None, key = lambda x: x[1], reverse = False)
 
-
-
     #read data out
     while sortedarray.__len__() != 0:
-       current = sortedarray.pop()
+        current = sortedarray.pop()
 
-       #print common interest for a certain person
-       for x in result:
+        #print common interest for a certain person
+        for x in result:
 
-            if list.__contains__(x[5]):
-               continue
+            if mylist.__contains__(x[5]):
+                continue
 
-           #find p in x# namelist = set() # reset the interest set
+                #find p in x# namelist = set() # reset the interest set
             if (current[0] == x[2]) :
 
                 if(not namelist.__contains__(current[0])):
@@ -63,11 +61,11 @@ def query1():
 
                 print "Common Interest: ", x[5], ", At level", x[3]
                 namelist.add(current[0])
-                list.add(x[5])
+                mylist.add(x[5])
 
-       list = set()
-       namelist = set() # reset the interest set
-       print '\n'
+        mylist = set()
+        namelist = set() # reset the interest set
+        print '\n'
 
 
 

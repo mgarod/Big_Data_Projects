@@ -1,6 +1,5 @@
 from py2neo import Graph
 
-
 graph = Graph()  # Makes connection to http://127.0.0.1:7474
 
 

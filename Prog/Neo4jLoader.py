@@ -34,8 +34,6 @@ def create_distanceGraph():
         MERGE (o:Organization {name: line.Organization1, name: line.Organization2})
     """
     statement1 %= currentDir
-
-    print statement1
     cypher.execute(statement1)
 
     #create relationships between oraganization
