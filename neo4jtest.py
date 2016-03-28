@@ -22,10 +22,10 @@ graph.create(Anny_knows_Michael)
 
 query = """
     MATCH (a:Person)-[k:Knows]->(b:Person)
-    WHERE b.name="Michael"
+    WHERE b.name="%s"
     RETURN a.name, b.name
 """
-
+query %= "Michael"
 print graph.cypher.execute(query)
 
 # path = os.path.realpath(__file__)

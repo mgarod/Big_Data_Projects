@@ -1,8 +1,16 @@
 from py2neo import Graph
-
+import Validators as valid
+import Query3
 
 def query1():
     # Get nameF, nameL within this function
+    u_id = valid.validate_num("$ Enter a user_id: ")
+
+    if Query3.user_exists(u_id):
+        print u_id
+    else:
+        print "User ID {} was not found".format(u_id)
+
 
     graph = Graph()  # Makes connection to http://127.0.0.1:7474
     cypher = graph.cypher
