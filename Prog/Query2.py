@@ -34,7 +34,7 @@ def query2():
 def PersonExist(U_id):
     """
     Check id is in database
-    :param U_id: int
+    :param U_id: int 
     :return: true if found other false
     """
     result = graph.cypher.execute(
