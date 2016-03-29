@@ -126,6 +126,7 @@ def create_InterestGraph():
         LOAD CSV WITH HEADERS FROM 'file://%s/Data/interests.csv' AS line
         MATCH (a:Person {User_id: TOINT(line.User_id) }), (b:interest {interestName: line.Interest})
         MERGE(a)-[:interested_in]->(b)
+        SET r.level = TOINT(line.Interestlevel)
     """
     statement2 %= currentDir
     cypher.execute(statement2)
