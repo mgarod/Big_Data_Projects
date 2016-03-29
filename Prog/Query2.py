@@ -45,6 +45,3 @@ def PersonExist(U_id):
     else:
         return False
 
-
-
-query2()
