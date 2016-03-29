@@ -48,14 +48,14 @@ def query1():
     sortedarray = table.items()
     sortedarray.sort(None, key = lambda x: x[1], reverse = False)
     print '\n'
-    
+
+    i = 1
     #read data out
     while sortedarray.__len__() != 0:
-    
+        print 'Rank #',i
         current = sortedarray.pop()
         #print common interest for a certain person
         for x in result:
-
             if mylist.__contains__(x[5]):
                 continue
 
@@ -75,8 +75,7 @@ def query1():
 
         mylist = set()
         namelist = set() # reset the interest set
+        i+=1
         print '\n'
-
-
 
 
