@@ -7,8 +7,6 @@ graph = Graph()  # Makes connection to http://127.0.0.1:7474
 cypher = graph.cypher
 currentDir = os.path.realpath(__file__)  # Get Path to Neo4jLoader.py
 currentDir = currentDir[:-15]  # Get Path to folder containing Neo4jLoader.py
-#currentDir = currentDir[:5] + '/' + currentDir[5:]
-
 
 def load_neo4j():
     graph.delete_all()
@@ -30,8 +28,8 @@ def create_distanceGraph():
 
     # creating Organization node
     statement1 = """
-        LOAD CSV WITH HEADERS FROM 'file://%s/Data/distance.csv' AS line
-        MERGE (o:Organization {name: line.Organization1, name: line.Organization2})
+        LOAD CSV WITH HEADERS FROM 'file://%s/Data/orgs.csv' AS line
+        Merge (o:Organization {name: line.Organization})
     """
     statement1 %= currentDir
     cypher.execute(statement1)
@@ -125,7 +123,7 @@ def create_InterestGraph():
     statement2 = """
         LOAD CSV WITH HEADERS FROM 'file://%s/Data/interests.csv' AS line
         MATCH (a:Person {User_id: TOINT(line.User_id) }), (b:interest {interestName: line.Interest})
-        MERGE(a)-[:interested_in]->(b)
+        MERGE(a)-[r:interested_in]->(b)
         SET r.level = TOINT(line.Interestlevel)
     """
     statement2 %= currentDir
