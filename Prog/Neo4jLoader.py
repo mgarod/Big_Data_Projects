@@ -116,7 +116,7 @@ def create_InterestGraph():
     # creating interest node
     statement1 = """
         LOAD CSV WITH HEADERS FROM 'file://%s/Data/interests.csv' AS line
-        MERGE (s:interest {interestName: line.Interest, level: TOINT(line.Interestlevel)})
+        MERGE (s:interest {interestName: line.Interest})
     """
     statement1 %= currentDir
     cypher.execute(statement1)
