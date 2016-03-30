@@ -9,6 +9,10 @@ session.row_factory = dict_factory
 
 
 def query3():
+    """
+    Retrieve all information related to a single user
+    :return:
+    """
     u_id = valid.validate_num("$ Enter a user_id: ")
 
     if user_exists(u_id):
