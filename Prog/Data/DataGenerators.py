@@ -58,7 +58,7 @@ def generate_all():
 def generate_names():
     """User_id, first name, last name"""
     name_file = open("names.csv", "w")
-    name_file.write("User_id,FirstName,LastName\n")
+    name_file.write("User_id, first name, last name\n")
     l = list()
 
     for i in range(1,USERMAX+1):
@@ -84,7 +84,7 @@ def generate_names():
 def generate_organizations():
     """User_id, organization, organization type"""
     orgs_file = open("orgs.csv", "w")
-    orgs_file.write("User_id,Organization,OrganizationType\n")
+    orgs_file.write("User_id, organization, organization type\n")
     for i in range(1, USERMAX+1):
         org = r.choice(orgs.keys())
         orgs_file.write(i.__str__())
@@ -97,9 +97,9 @@ def generate_organizations():
 
 
 def generate_projects():
-    """User_id, project"""
+    """User_id, Project"""
     proj_file = open("projects.csv", "w")
-    proj_file.write("User_id,Project\n")
+    proj_file.write("User_id, Project\n")
     for i in range(1, USERMAX+1):
         for j in range(r.randint(3, 10)):
             proj_file.write(i.__str__())
@@ -112,7 +112,7 @@ def generate_projects():
 def generate_skills():
     """User_id, Skill, Skill level"""
     skills_file = open("skills.csv", "w")
-    skills_file.write("User_id,Skill,Skilllevel\n")
+    skills_file.write("User_id, Skill, Skill level\n")
     for i in range(1, USERMAX+1):
         l = list()
         for j in range(r.randint(3, 10)):
@@ -131,7 +131,7 @@ def generate_skills():
 def generate_interests():
     """User_id, Interest, Interest level"""
     interests_file = open("interests.csv", "w")
-    interests_file.write("User_id,Interest,Interestlevel\n")
+    interests_file.write("User_id, Interest, Interest level\n")
     for i in range(1, USERMAX+1):
         l = list()
         for j in range(r.randint(3, 10)):
@@ -150,7 +150,7 @@ def generate_interests():
 def generate_distances():
     """Organization 1, Organization 2, Distance"""
     distance_file = open("distance.csv", "w")
-    distance_file.write("Organization1,Organization2,Distance\n")
+    distance_file.write("Organization 1, Organization 2, Distance\n")
     key_list = orgs.keys()
     for i in orgs.keys():
         key_list.remove(i)
