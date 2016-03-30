@@ -65,8 +65,8 @@ def print_result(result):
     uid = result[0]["user_id"]
     fn = result[0]["first_name"].encode("ascii")
     ln = result[0]["last_name"].encode("ascii")
-    orgname = result[0]["organization"].keys()[0].encode("ascii")
-    orgtype = result[0]["organization"][orgname]
+    orgname = result[0]["organization"]
+    orgtype = result[0]["organization_type"]
     projs = projs_to_str(result[0]["projects"])
     interests = map_to_list(result[0]["interests"])
     skills = map_to_list(result[0]["skills"])

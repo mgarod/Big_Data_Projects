@@ -104,7 +104,6 @@ def create_Relationship():
         MATCH (thisPerson{User_id: TOINT(line.User_id) })-[:Working_on]->(project)<-[:Working_on]-(Person)
         WHERE NOT (thisPerson)-[:Working_on]-(Person)
         MERGE(thisPerson)-[:colleague]-(Person)
-
     """
     statement2 %= currentDir
     cypher.execute(statement2)
@@ -128,6 +127,3 @@ def create_InterestGraph():
     """
     statement2 %= currentDir
     cypher.execute(statement2)
-
-
-load_neo4j()

@@ -36,7 +36,8 @@ def setup_session():
             user_id int PRIMARY KEY,
             first_name text,
             last_name text,
-            organization map<text, text>,
+            organization text,
+            organization_type text,
             projects set<text>,
             skills map<text, int>,
             interests map<text, int>
@@ -65,7 +66,7 @@ def load_orgs():
     update_stmt = session.prepare(
         """
         UPDATE users
-        SET organization = ?
+        SET organization = ?, organization_type = ?
         WHERE user_id = ?
         """
     )
@@ -74,8 +75,7 @@ def load_orgs():
         csvfile = csv.reader(f)
         next(csvfile, None)  # Skip headers
         for row in csvfile:
-            d = {row[1]: row[2]}
-            update_stmt = update_stmt.bind([d, int(row[0])])
+            update_stmt = update_stmt.bind([row[1], row[2], int(row[0])])
             session.execute(update_stmt)
 
 
