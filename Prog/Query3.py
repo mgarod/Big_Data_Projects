@@ -27,6 +27,8 @@ def user_exists(uid):
     Precondition: uid is a non-negative integer
     Precondition: There is only 1 record with a given user_id (primary key)
 
+    This function is in for Query 1 and Query 2 as well
+
     :param uid: User input user_id
     :return: Boolean
     """

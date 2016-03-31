@@ -1,5 +1,6 @@
 from py2neo import Graph
 import Validators as valid
+import Query3
 
 graph = Graph()  # Makes connection to http://127.0.0.1:7474
 
@@ -8,8 +9,9 @@ def query2():
     #get user id
     u_id = valid.validate_num("$ Enter a user_id: ")
 
-    if not PersonExist(u_id):
-        print "User ID {} not found in database".format(u_id)
+    # User Cassandra to verify existence for speed
+    if not Query3.user_exists(u_id):
+        print "User ID {} was not found".format(u_id)
         return
 
     #get the resource data from the query
@@ -30,19 +32,3 @@ def query2():
     for index in result:
         print "{} | {} {}".format(k,index[0], index[1])
         k+=1
-
-def PersonExist(U_id):
-    """
-    Check id is in database
-    :param U_id: int
-    :return: true if found other false
-    """
-    result = graph.cypher.execute(
-        "MATCH (p:Person{User_id: {uid} } ) return p", uid = U_id)
-
-    if result.__len__() > 0:
-        return True
-    else:
-        return False
-
-

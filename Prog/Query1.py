@@ -3,10 +3,12 @@ import sys
 import Validators as valid
 import Query3
 
+
 def query1():
     # Get nameF, nameL within this function
     u_id = valid.validate_num("$ Enter a user_id: ")
 
+    # User Cassandra to verify existence for speed
     if not Query3.user_exists(u_id):
         print "User ID {} was not found".format(u_id)
         return
@@ -106,6 +108,7 @@ def getRankOrder(result):
     sortedarray = table.items()
     sortedarray.sort(None, key = lambda x: x[1], reverse = False)
     return sortedarray
+
 
 def printPerson(person):
     """
