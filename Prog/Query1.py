@@ -40,8 +40,11 @@ def query1():
         """
         ,uid=u_id)
     sys.stdout.flush()
-    
+
+
     print '\n'
+
+
     newArray = getRankOrder(result)
     printPerson(person)
 
@@ -51,14 +54,21 @@ def query1():
 
     printData(newArray,result)
 
+
 def printData(sortedarray, result):
+    """
+    Print data out
+    :param sortedarray: Sorted data
+    :param result: table of information
+    :return: nothing
+    """
    # mylist = set()
     namelist = set()
     i = 1
     #read data out
     while sortedarray.__len__() != 0:
         print 'Rank #',i,'|',
-        print '^'*54
+        print '#'*54
         current = sortedarray.pop()
         #print common interest for a certain person
         for x in result:
@@ -66,7 +76,7 @@ def printData(sortedarray, result):
             if (current[0] == x[2]) :
                 if(not namelist.__contains__(current[0])):
                     fullname ="Name: "
-                    fullname =fullname + x[0] + " " + x[1] + ", Working at: "+ x[4] +"  User id: "
+                    fullname =fullname + x[0] + " " + x[1] + ", Working at: "+ x[4] +",  User id: "
                     print fullname, current[0]
 
                 print "Common Interest: {} ({}) ".format( x[6], x[5])
@@ -78,6 +88,12 @@ def printData(sortedarray, result):
         print '\n'
 
 def getRankOrder(result):
+    """
+    Precondition result must be populated
+    Get order of the search
+    :param result: table of information
+    :return: sorted array with data in order
+    """
     #get ranking order
     table = {}
     for index in result:
@@ -92,6 +108,11 @@ def getRankOrder(result):
     return sortedarray
 
 def printPerson(person):
+    """
+    Print person who we are running query on
+    :param person:  user entered person
+    :return: nothing
+    """
     print 'You have entered: '
     k = 0
     print '_'*65
@@ -104,4 +125,6 @@ def printPerson(person):
 
         print "{:5} | {} ({})".format("",i[4], i[3], width=15)
     print '-'*65
+
+
 
