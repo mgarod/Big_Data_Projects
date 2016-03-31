@@ -25,7 +25,7 @@ def query2():
         """, Uid = u_id, uint = u_interest)
 
     if result.__len__() == 0:
-        print 'No results found for User id:' + u_id
+        print 'No results found'
         return
 
     print 'Trusted colleague of colleague that are interested in {} :'.format( u_interest)
