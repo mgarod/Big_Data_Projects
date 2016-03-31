@@ -28,7 +28,7 @@ def query2():
         print 'No results found for User id:' + u_id
         return
 
-    print 'Trusted colleague of colleague that share a common interest with', result[0][2], result[0][3]
+    print 'Trusted colleague of colleague that are interested in {} :'.format( u_interest)
 
     k = 1
     for index in result:
