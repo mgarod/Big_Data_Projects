@@ -18,7 +18,6 @@ def load_neo4j():
 
 
 def create_distanceGraph():
-    #refer to loadDisGraph.cpl for comments on commands in execute
 
     #execute indexing command
     cypher.execute("""
@@ -26,18 +25,18 @@ def create_distanceGraph():
         ASSERT o.name IS UNIQUE;
     """)
 
-    # creating Organization node
+    # creating Organization node, Commit every 1000 row, and skip the header
     statement1 = """
+        USING PERIODIC COMMIT 1000
         LOAD CSV FROM 'file://%s/Data/orgs.csv' AS line with line skip 1
         Merge (o:Organization {name: TOUPPER(line[1])})
     """
     statement1 %= currentDir
     cypher.execute(statement1)
 
-
-
-    #create relationships between oraganization
+    #create relationships between oraganization, Commit every 1000 row
     statement2 = """
+        USING PERIODIC COMMIT 1000
         LOAD CSV  FROM 'file://%s/Data/distance.csv' AS line
         MATCH (company1:Organization { name: TOUPPER(line[0])})
         MATCH (company2:Organization { name: TOUPPER(line[1])})
@@ -50,13 +49,13 @@ def create_distanceGraph():
 
 
 def create_PersonGraph():
-    #refer to loadDisGraph.cpl for comments on commands in execute
 
     # execute indexing command
-    cypher.execute("CREATE CONSTRAINT ON (P:Person) ASSERT P.User_id IS UNIQUE")
+    cypher.execute("CREATE CONSTRAINT ON (p:Person) ASSERT p.User_id IS UNIQUE")
 
-    # creating person graph
+    # creating person graph,Commit every 1000 row, and skip the header
     statement1 = """
+        USING PERIODIC COMMIT 1000
         LOAD CSV FROM 'file://%s/Data/names.csv' AS line with line skip 1
         MERGE (p:Person { User_id: TOINT(line[0]),
         Fname: upper(line[1]), Lname: upper(line[2])} )
@@ -65,12 +64,10 @@ def create_PersonGraph():
     cypher.execute(statement1)
 
 
-
-
 def create_ProjectGraph():
-    # creating project graph
-
+    # creating project graph, Commit every 1000 row, and skip the header
     statement1 = """
+        USING PERIODIC COMMIT 1000
         LOAD CSV FROM 'file://%s/Data//projects.csv' AS line with line skip 1
         MERGE(i:projects { projectname: Tolower(line[1]) } )
     """
@@ -78,12 +75,13 @@ def create_ProjectGraph():
     cypher.execute(statement1)
 
 
-    # creating relationships between person and projects
+    # creating relationships between person and projects, Commit every 1000 row, and skip the header
     statement2 = """
+        USING PERIODIC COMMIT 1000
         LOAD CSV FROM 'file://%s/Data//projects.csv' AS line with line skip 1
-        MATCH (a:Person { User_id: TOINT(line[0])}),
+        MATCH (p:Person { User_id: TOINT(line[0])}),
         (b:projects { projectname: tolower(line[1]) })
-        MERGE (a)-[:Working_on]->(b)
+        MERGE (p)-[:Working_on]->(b)
     """
 
     statement2 %= currentDir
@@ -91,21 +89,23 @@ def create_ProjectGraph():
 
 
 def create_Relationship():
-    # creating relationships between person and organization
+    # creating relationships between person and organization, Commit every 1000 row, and skip the header
     statement1 = """
+        USING PERIODIC COMMIT 1000
         LOAD CSV FROM 'file://%s/Data//orgs.csv' AS line with line skip 1
-        MATCH (a:Person { User_id: TOINT(line[0]) }),
+        MATCH (p:Person { User_id: TOINT(line[0]) }),
             (b:Organization { name:TOUPPER(line[1]) })
-        CREATE (a)-[:Work_at]->(b)
+        CREATE (p)-[:Work_at]->(b)
 
     """
     statement1 %= currentDir
     cypher.execute(statement1)
 
-    # creating colleague relationships
+    # creating colleague relationships, Commit every 1000 row, and skip the header
     statement2 = """
+        USING PERIODIC COMMIT 1000
         LOAD CSV  FROM 'file://%s/Data//orgs.csv' AS line with line skip 1
-        MATCH (thisPerson{User_id: TOINT(line[0]) })-[:Working_on]->(project)<-[:Working_on]-(Person)
+        MATCH (thisPerson:Person {User_id: TOINT(line[0]) })-[:Working_on]->(project)<-[:Working_on]-(Person)
         WHERE NOT (thisPerson)-[:Working_on]-(Person)
         MERGE(thisPerson)-[:colleague]-(Person)
     """
@@ -114,19 +114,21 @@ def create_Relationship():
 
 
 def create_InterestGraph():
-    # creating interest node
+    # creating interest node, Commit every 1000 row, and skip the header
     statement1 = """
+        USING PERIODIC COMMIT 1000
         LOAD CSV FROM 'file://%s/Data/interests.csv' AS line with line skip 1
         MERGE (s:interest {interestName: tolower(line[1])})
     """
     statement1 %= currentDir
     cypher.execute(statement1)
 
-    # creating relations between interest and person
+    # creating relations between interest and person, Commit every 1000 row, and skip the header
     statement2 = """
+        USING PERIODIC COMMIT 1000
         LOAD CSV FROM 'file://%s/Data/interests.csv' AS line with line skip 1
-        MATCH (a:Person {User_id: TOINT(line[0]) }), (b:interest {interestName: tolower(line[1])})
-        MERGE(a)-[r:interested_in]->(b)
+        MATCH (p:Person {User_id: TOINT(line[0]) }), (b:interest {interestName: tolower(line[1])})
+        MERGE(p)-[r:interested_in]->(b)
         SET r.level = TOINT(line[2])
     """
     statement2 %= currentDir
