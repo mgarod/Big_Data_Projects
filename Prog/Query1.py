@@ -41,12 +41,9 @@ def query1():
          likes.interestName AS iName
         """
         ,uid=u_id)
+    #flush print stream to avoid print error
     sys.stdout.flush()
-
-
     print '\n'
-
-
     newArray = getRankOrder(result)
     printPerson(person)
 
