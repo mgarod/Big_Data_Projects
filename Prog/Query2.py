@@ -9,7 +9,7 @@ def query2():
     #get user id and interest name from user
     u_id = valid.validate_num("$ Enter a user_id: ")
     u_interest = raw_input("$ Enter an Interest: ")
-    u_interest.lower()
+   
 
     # User Cassandra to verify existence for speed
     if not Query3.user_exists(u_id):
@@ -20,7 +20,7 @@ def query2():
     result = graph.cypher.execute("""
         MATCH (p:Person{User_id: {Uid} })-[r:colleague*2]-(Similar_p)
         WHERE NOT  (p)-[:colleague]-(Similar_p)
-        MATCH (Similar_p)-[:interested_in]->(interest) where interest.interestName = {uint}
+        MATCH (Similar_p)-[:interested_in]->(interest) where interest.interestName = TOLOWER({uint})
         return DISTINCT  Similar_p.Fname, Similar_p.Lname, p.Fname, p.Lname, interest.interestName
         """, Uid = u_id, uint = u_interest)
     
