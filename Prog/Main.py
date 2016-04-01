@@ -30,7 +30,7 @@ class Interface:
                           index=keys)
 
         print
-        print "Enter a number to select a command"
+        print "Enter a number to select a command (Use CTRL+C to terminate)"
         print "--------------------------------------------------"
         print df.to_string(index=False)
 

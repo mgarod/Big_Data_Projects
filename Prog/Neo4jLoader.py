@@ -8,6 +8,7 @@ cypher = graph.cypher
 currentDir = os.path.realpath(__file__)  # Get Path to Neo4jLoader.py
 currentDir = currentDir[:-15]  # Get Path to folder containing Neo4jLoader.py
 
+
 def load_neo4j():
     graph.delete_all()
     create_distanceGraph()
@@ -19,7 +20,7 @@ def load_neo4j():
 
 def create_distanceGraph():
 
-    #execute indexing command
+    # execute indexing command
     cypher.execute("""
         CREATE CONSTRAINT ON (o:Organization)
         ASSERT o.name IS UNIQUE;
@@ -34,7 +35,7 @@ def create_distanceGraph():
     statement1 %= currentDir
     cypher.execute(statement1)
 
-    #create relationships between oraganization, Commit every 1000 row
+    # create relationships between oraganization, Commit every 1000 row
     statement2 = """
         USING PERIODIC COMMIT 1000
         LOAD CSV  FROM 'file://%s/Data/distance.csv' AS line

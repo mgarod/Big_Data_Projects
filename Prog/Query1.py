@@ -15,7 +15,7 @@ def query1():
 
     graph = Graph()  # Makes connection to http://127.0.0.1:7474
     cypher = graph.cypher
-    #get the resource data from the query
+    # get the resource data from the query
     result = cypher.execute(
         """
         Match (person:Person {User_id: {uid}})-[r:Work_at]->(job)
@@ -33,15 +33,15 @@ def query1():
         return closePerson.Fname AS PersonF, closePerson.Lname AS PersonL
         , closePerson.User_id AS Personid, TOINT(ri2.level) AS level,closeCompany.name AS company,
         ri.level AS OtherLevel, cpInterest.interestName order BY TOINT( ri2.level) DESC
-        """,uid=u_id)
+        """, uid=u_id)
     person = cypher.execute(
         """
         Match (person:Person {User_id: {uid}})- [r:interested_in]->(likes)
         return person.User_id AS ids, person.Fname AS fname, person.Lname AS lname, r.level AS level,
          likes.interestName AS iName
         """
-        ,uid=u_id)
-    #flush print stream to avoid print error
+        , uid=u_id)
+    # flush print stream to avoid print error
     sys.stdout.flush()
     print '\n'
     newArray = getRankOrder(result)
@@ -61,28 +61,29 @@ def printData(sortedarray, result):
     :param result: table of information
     :return: nothing
     """
-   # mylist = set()
+    # mylist = set()
     namelist = set()
     i = 1
-    #read data out
+    # read data out
     while sortedarray.__len__() != 0:
-        print 'Rank #',i,'|',
+        print 'Rank #', i, '|',
         print '#'*54
         current = sortedarray.pop()
-        #print common interest for a certain person
+        # print common interest for a certain person
         for x in result:
-                #find p in x# namelist = set() # reset the interest set
-            if (current[0] == x[2]) :
-                if(not namelist.__contains__(current[0])):
-                    fullname ="Name: "
+                # find p in x# namelist = set() # reset the interest set
+            if current[0] == x[2]:
+                if not namelist.__contains__(current[0]):
+                    fullname = "Name: "
                     fullname =fullname + x[0] + " " + x[1] + ", Working at: "+ x[4] +",  User id: "
                     print fullname, current[0]
 
                 print "Common Interest: {} ({}) ".format( x[6], x[5])
 
                 namelist.add(current[0])
-        namelist = set() # reset the interest set
-        i+=1
+        # reset the interest set
+        namelist = set()
+        i += 1
         print 'Total shared interest weight: {}'.format(current[1])
         print '\n'
 
@@ -94,7 +95,7 @@ def getRankOrder(result):
     :param result: table of information
     :return: sorted array with data in order
     """
-    #get ranking order
+    # get ranking order
     table = {}
     for index in result:
         if table.has_key(index.Personid):
@@ -102,7 +103,7 @@ def getRankOrder(result):
         else:
             table[index.Personid] = min(index.level, index.OtherLevel)
 
-    #put inorder
+    # put inorder
     sortedarray = table.items()
     sortedarray.sort(None, key = lambda x: x[1], reverse = False)
     return sortedarray
@@ -118,13 +119,11 @@ def printPerson(person):
     k = 0
     print '_'*65
     for i in person:
-        if k == 0 :
-             print "User id: {} , Name: {} {}".format(i[0],i[1], i[2]),
-             print 'who is interest in:'
-             k+=1
-
-
-        print "{:5} | {} ({})".format("",i[4], i[3], width=15)
+        if k == 0:
+            print "User id: {} , Name: {} {}".format(i[0], i[1], i[2]),
+            print 'who is interest in:'
+            k += 1
+        print "{:5} | {} ({})".format("", i[4], i[3], width=15)
     print '-'*65
 
 

@@ -1,7 +1,7 @@
 def validate_command(keys):
     """
-    :param message: Message to show to the user
-    Retreive a valid positive integer from the the user keyboard.
+    :param keys: Message to show to the user
+    Retrieve a valid positive integer from the the user keyboard.
     """
     good_number = False
     num = None
