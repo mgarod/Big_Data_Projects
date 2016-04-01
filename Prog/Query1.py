@@ -89,6 +89,7 @@ def printData(sortedarray, result):
         print 'Total shared interest weight: {}'.format(current[1])
         print '\n'
 
+
 def getRankOrder(result):
     """
     Precondition result must be populated

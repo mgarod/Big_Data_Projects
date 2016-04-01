@@ -41,7 +41,7 @@ skills = [
 
 interests = [
     "Video Games","Surfing","Physical Fitness","Movies","TV","Snowboarding",
-    "Card Games", "Wine", "Travelling", "Food and Cooking", "Photography",
+    "Card Games", "Wine", "Traveling", "Food and Cooking", "Photography",
     "Football", "Soccer", "Painting", "History", "Reading", "Museums", "Drawing"
 ]
 

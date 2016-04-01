@@ -10,14 +10,14 @@ def validate_command(keys):
         try:
             num = int(raw_input("Input a number in {}: ".format(keys)))
 
-            if num < 0:
-                raise ValueError("Please input only a positive integer")
-            elif num not in keys:
+            if num not in keys:
                 raise ValueError("Please input a valid listed Key")
+            elif num < 0:
+                raise ValueError("Please input only a positive integer")
 
             good_number = True
-        except ValueError:
-            print "Please input only a positive integer"
+        except ValueError as e:
+            print e
 
     return num
 

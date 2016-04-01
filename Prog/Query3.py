@@ -56,7 +56,7 @@ def select_user(uid):
     """
     statement = session.prepare(
         """
-        SELECT*
+        SELECT *
         FROM users
         WHERE user_id = ?
         """
