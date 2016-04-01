@@ -6,7 +6,7 @@ graph = Graph()  # Makes connection to http://127.0.0.1:7474
 
 
 def query2():
-    #get user id
+    #get user id and interest name from user
     u_id = valid.validate_num("$ Enter a user_id: ")
     u_interest = raw_input("$ Enter an Interest: ")
     u_interest.lower()
@@ -23,7 +23,8 @@ def query2():
         MATCH (Similar_p)-[:interested_in]->(interest) where interest.interestName = {uint}
         return DISTINCT  Similar_p.Fname, Similar_p.Lname, p.Fname, p.Lname, interest.interestName
         """, Uid = u_id, uint = u_interest)
-
+    
+    #if not data is found in search
     if result.__len__() == 0:
         print 'No results found'
         return
