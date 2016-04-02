@@ -1,3 +1,10 @@
+# Runtime Instructions
+
+1. Navigate to path/Prog/Data
+2. Run 'python DataGenerators.py'
+3. Navigate to path/Prog
+4. Run 'python Main.py'
+
 ## Headers
 Here are examples of CSV headers. Each line represents a CSV file
 

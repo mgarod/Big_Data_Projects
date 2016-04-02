@@ -135,3 +135,6 @@ def print_table_map():
     rows = session.execute("SELECT * FROM users")
     for row in rows:
         print row["interests"]
+
+
+load_cassandra()

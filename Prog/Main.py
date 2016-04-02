@@ -1,10 +1,10 @@
+import CassandraLoader  # Self-executing
+import Neo4jLoader  # Self-executing
 import Query1 as q1
 import Query2 as q2
 import Query3 as q3
 import Validators as valid
 import pandas as pd
-import CassandraLoader as cload
-import Neo4jLoader as nload
 
 
 class Interface:
@@ -14,9 +14,6 @@ class Interface:
             2: q2.query2,
             3: q3.query3
         }
-
-        cload.load_cassandra()
-        nload.load_neo4j()
 
         while True:
             self.display()
