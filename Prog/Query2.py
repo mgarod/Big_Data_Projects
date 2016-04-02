@@ -29,7 +29,7 @@ def query2():
         print 'No results found'
         return
 
-    print 'Trusted colleague of colleague that are interested in {} :'.format(u_interest)
+    print '\nTrusted colleague of colleague that are interested in {} :'.format(u_interest)
 
     k = 1
     for index in result:
