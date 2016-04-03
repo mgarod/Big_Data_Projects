@@ -1,8 +1,12 @@
 #Big Data Project #1 - collaborator.net
 CSCI 493.71, Spring 2016
+
 Professor Lei Xie
-Michael Garod
-Ryan Kallicharran
+
+### Authors
+- Michael Garod
+
+- Ryan Kallicharran
 
 ### Runtime Instructions
 1. Navigate to path/Prog/Data and run 'python DataGenerators.py' (Optional)
