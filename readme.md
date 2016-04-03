@@ -1,19 +1,17 @@
-Big Data Project #1 - collaborator.net
+#Big Data Project #1 - collaborator.net
 CSCI 493.71, Spring 2016
 Professor Lei Xie
+Michael Garod
+Ryan Kallicharran
 
-# Authors
-- Michael Garod
-- Ryan Kallicharran
-
-## Runtime Instructions
+### Runtime Instructions
 1. Navigate to path/Prog/Data and run 'python DataGenerators.py' (Optional)
 2. Navigate to path/Prog and run 'python Main.py'
 
-## Databases
+### Databases
 This project uses Cassandra and Neo4j. The program requires that an instance of each database is running locally before execution.
 
-## CSV Headers
+### CSV Headers
 Here are examples of CSV headers. Each line represents a CSV file
 
 User_id, first name, last name
