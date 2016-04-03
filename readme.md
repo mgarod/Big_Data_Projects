@@ -5,7 +5,6 @@ Professor Lei Xie
 
 ### Authors
 - Michael Garod
-
 - Ryan Kallicharran
 
 ### Runtime Instructions
