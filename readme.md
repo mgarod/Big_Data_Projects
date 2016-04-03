@@ -1,11 +1,19 @@
-# Runtime Instructions
+Big Data Project #1 - collaborator.net
+CSCI 493.71, Spring 2016
+Professor Lei Xie
 
-1. Navigate to path/Prog/Data
-2. Run 'python DataGenerators.py'
-3. Navigate to path/Prog
-4. Run 'python Main.py'
+# Authors
+- Michael Garod
+- Ryan Kallicharran
 
-## Headers
+## Runtime Instructions
+1. Navigate to path/Prog/Data and run 'python DataGenerators.py' (Optional)
+2. Navigate to path/Prog and run 'python Main.py'
+
+## Databases
+This project uses Cassandra and Neo4j. The program requires that an instance of each database is running locally before execution.
+
+## CSV Headers
 Here are examples of CSV headers. Each line represents a CSV file
 
 User_id, first name, last name
@@ -19,29 +27,3 @@ User_id, Skill,	Skill level
 User_id, Interest, Interest level	
 
 Organization 1, Organization 2, Distance	
-
-## Necessary DBs 
-USER DB (Cassandra)
-
-COLLEAUGE GRAPH (Neo4j)
-  * People nodes
-  * bidirectional "Worked with" edges
-	
-COMPANY GRAPH(completed with cypher)
-  * Company nodes
-  * weighted bidirectional "Distance" edges
-  * bidirectional "Less than 10 miles" edges
-  * **csv File require header Orangization 1, Organization 2, Distance
-
-
-## Queries Pseudocode
-#### Query 1
-
-1. Get user from USER DB
-2. Keep map of user skills and interests, and user company
-3. Get all companies <10 miles from COMPANY GRAPH
-4. Find all otherusers at companies <10 miles from USER DB
-5. Match user to otheruser based on interest/skill intersection
-6. Sort otherusers by highest match
-
-#### Query 2
