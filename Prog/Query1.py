@@ -24,15 +24,15 @@ def query1():
         Match (closePerson)-[ri:interested_in]->(cpInterest)<-[ri2:interested_in]-(person)
         return closePerson.Fname AS PersonF, closePerson.Lname AS PersonL
         , closePerson.User_id AS Personid,
-        TOINT(ri2.level) AS level,closeCompany.name AS company,ri.level AS OtherLevel,
-        cpInterest.interestName order BY TOINT( ri2.level) DESC
+        toFloat(ri2.level) AS level,closeCompany.name AS company,ri.level AS OtherLevel,
+        cpInterest.interestName order BY tofloat( ri2.level) DESC
         UNION
         Match (person:Person {User_id: {uid}})-[r:Work_at]->(closeCompany)
         Match (closePerson)-[:Work_at]->(closeCompany)
         Match (closePerson)-[ri:interested_in]->(cpInterest)<-[ri2:interested_in]-(person)
         return closePerson.Fname AS PersonF, closePerson.Lname AS PersonL
-        , closePerson.User_id AS Personid, TOINT(ri2.level) AS level,closeCompany.name AS company,
-        ri.level AS OtherLevel, cpInterest.interestName order BY TOINT( ri2.level) DESC
+        , closePerson.User_id AS Personid, tofloat(ri2.level) AS level,closeCompany.name AS company,
+        ri.level AS OtherLevel, cpInterest.interestName order BY tofloat( ri2.level) DESC
         """, uid=u_id)
     person = cypher.execute(
         """
