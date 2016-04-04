@@ -42,8 +42,8 @@ def create_distanceGraph():
         MATCH (company1:Organization { name: TOUPPER(line[0])})
         MATCH (company2:Organization { name: TOUPPER(line[1])})
         MERGE (company1)-[m:DISTANCE]-(company2)
-        SET m.miles = TOINT(line[2]),
-        m.closeby = CASE WHEN TOINT(line[2]) < 10 THEN true ELSE false END
+        SET m.miles = toFloat(line[2]),
+        m.closeby = CASE WHEN toFloat(line[2]) <= 10 THEN true ELSE false END
     """
     statement2 %= currentDir
     cypher.execute(statement2)
