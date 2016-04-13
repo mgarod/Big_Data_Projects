@@ -28,10 +28,6 @@ def tuplefactory(x):
 	return (x, 1)
 
 
-def listfactory(x):
-	return (x[0], list(x[1]))
-
-
 def sum_list(x):
 	return (x[0], sum(x[1]))
 
