@@ -1,83 +1,38 @@
 """
-This test script counts the number of numbers (exclusively) divisible
-by 3, 5, and 15 from 0 to 1,000,000.
-
-You can simply copy and paste the following into the PySpark interpreter.
+You can run this file with root/.../bin/spark-submit
 """
-
-import psutil
-
-
-def fizzbuzz(x):
-    if (x % 3) == 0 and (x % 5) == 0:
-        return 15
-    elif (x % 5) == 0:
-        return 5
-    elif (x % 3) == 0:
-        return 3
+from pyspark import SparkConf, SparkContext
 
 
-def isInt(x):
-    try:
-        return int(x)
-    except:
-        return False
+conf = (SparkConf()
+         .setMaster("local")
+         #.setAppName("My app")
+         #.set("spark.executor.memory", "4g")
+)
+sc = SparkContext(conf = conf)
 
 
-def tuplefactory(x):
-    return (x, 1)
-
-
-def sum_list(x):
-    return (x[0], sum(x[1]))
-
-
-a = sc.parallelize(range(1, 1000000))
-b = a.map(fizzbuzz)
-c = b.filter(isInt)
-d = c.map(tuplefactory)
-e = d.groupByKey()
-f = e.map(sum_list)
-f.collect()
-
-#################################
-
-lines = sc.textFile("sherlock.txt")
-lines = lines.filter(lambda x: len(x) > 0)
-splitlines = lines.map(lambda x: x.split())
-
-lines = lines.flatMap()
-
-
-def counter(x):
+def docid_word(x):
     l = list()
-    for i in x:
-        l.append((i, 1))
+    doc_id = x[0]
+    for word in x[1].split():
+        tuple = ((doc_id, word), 1)
+        l.append(tuple)
     return l
 
+# (Key, Value) ---> ( tuple (docid, word), 1) ) 
+ex = sc.textFile("example.txt")  # Open the file, splitting on '\n'
+ex2 = ex.map(lambda x: x.split('\t'))  # Separate the doc id
+ex3 = ex2.map(docid_word)  # Generate (docid, word) ---> 1
+flat = ex3.flatMap(lambda x: x)  # Remove partitions separating documents
+grouped = flat.reduceByKey(lambda x,y: x+y)  # Group By Key, sum frequency
 
-lines = lines.map(counter)
+print "Word Count Per Document (sorted by frequency):"
+print grouped.sortBy(lambda x: x[1], ascending=False).collect()
 
-##################################
-lines = list()
+# (Key Value) ---> ( word, 1 )
+total = grouped.map(lambda x: (x[0][1], 1))  # Extract only (word, 1)
+total2 = total.reduceByKey(lambda x,y: x+y)  # Traditional word count MapReduce
 
-with open("sherlock.txt") as f:
-    for line in f:
-        line = line.split()
-        line = sc.parallelize(line)
-        lines.append(line)
-
-for i in range(len(lines)):
-    lines[i] = lines[i].map(lambda x: (x, 1))
-
-for i in range(len(lines)):
-    lines[i] = lines[i].groupByKey().map(lambda x: (x[0], sum(list(x[1]))))
-
-
-
-
-
-
-
-
-
+print "\nWord Count for the Courpus (sorted by frequency):"
+print total2.sortBy(lambda x: x[1], ascending=False).collect()
