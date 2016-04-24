@@ -56,8 +56,8 @@ print total2.sortBy(lambda x: x[1], ascending=False).collect()
 ###########################################################
 # TERM FREQUENCY RATIO
 # We must have the total number of documents
-# We do calculations ASSUMING that documents start at document #1, not #0
-total_docs = int(grouped.map(lambda x: x[0][0]).max())
+# Make 
+total_docs = grouped.groupBy(lambda x: x[0][0]).count()
 
 def duplicatefreq(x, num_docs):
 	l = list()
@@ -96,7 +96,7 @@ print tfbydoc.collect()
 # math.log(x) returns the natural logarithm of x
 
 def idf(x):
-	return (x[0], math.log(float(num_docs) / float(x[1])))
+	return (x[0], math.log(float(total_docs) / float(x[1])))
 
 # Emit (word, 1) representing this word appears in 1 document
 # There is no duplicates b/c we are starting from WORD FREQ. BY DOC. result
@@ -118,9 +118,8 @@ def tf_ratio_tuple(x):
 	return (x[0], float(x[1]) / word_count)
 
 tf = total2.map(tf_ratio_tuple)
-
-tf.map(lambda x:x[1]).reduce(add)
-
+print "\nTerm Frequency (sorted by frequency ratio):"
+print tf.sortBy(lambda x: x[1], ascending=False).collect()
 
 
 
