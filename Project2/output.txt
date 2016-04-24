@@ -65,7 +65,7 @@ Word Count for the Corpus (sorted by frequency):
 	(u'a', 1)
 ]
 
-Term Frequency (sorted by docid, then frequency):
+Term Frequency (sorted by docid, then frequency ratio):
 [
 	(('1', u'a'), 1.0),
 	(('1', u'apple'), 1.0),
@@ -102,4 +102,32 @@ Term Frequency (sorted by docid, then frequency):
 	(('5', u'cat'), 0.5),
 	(('5', u'that'), 0.3333333333333333),
 	(('5', u'this'), 0.2)
+]
+
+Inverse Document Frequency (sorted by idf):
+[
+	(u'is', 0.22314355131420976),
+	(u'this', 0.5108256237659907),
+	(u'and', 0.9162907318741551),
+	(u'different', 0.9162907318741551),
+	(u'sentence', 0.9162907318741551),
+	(u'that', 0.9162907318741551),
+	(u'dog', 0.9162907318741551),
+	(u'cat', 0.9162907318741551),
+	(u'a', 1.6094379124341003),
+	(u'my', 1.6094379124341003),
+	(u'but', 1.6094379124341003),
+	(u'I', 1.6094379124341003),
+	(u'another', 1.6094379124341003),
+	(u'not', 1.6094379124341003),
+	(u'the', 1.6094379124341003),
+	(u'hat', 1.6094379124341003),
+	(u'an', 1.6094379124341003),
+	(u'apple', 1.6094379124341003),
+	(u"don't", 1.6094379124341003),
+	(u'puke', 1.6094379124341003),
+	(u'to', 1.6094379124341003),
+	(u'going', 1.6094379124341003),
+	(u'than', 1.6094379124341003),
+	(u'like', 1.6094379124341003)
 ]
