@@ -1,5 +1,5 @@
-1	this is a sentence and this is an apple
-2	this is another different sentence this is another different sentence
-3	the cat is going to puke but the dog is not
-4	my dog is different than that dog my dog is different than that dog
-5	I don't like this cat and I don't like that hat
+1 this is a sentence and this is an apple
+2 this is another different sentence this is another different sentence
+3 the cat is going to puke but the dog is not
+4 my dog is different than that dog my dog is different than that dog
+5 I don't like this cat and I don't like that hat
