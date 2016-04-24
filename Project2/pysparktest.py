@@ -4,6 +4,7 @@ You must run this file with /usr/local/bin/spark-submit
 from pyspark import SparkConf, SparkContext
 import sys
 import math
+from operator import add
 
 if len(sys.argv) != 2:
         print "Usage: spark-submit pysparktest.py <file>"
@@ -55,6 +56,7 @@ print total2.sortBy(lambda x: x[1], ascending=False).collect()
 ###########################################################
 # TERM FREQUENCY RATIO
 # We must have the total number of documents
+# We do calculations ASSUMING that documents start at document #1, not #0
 total_docs = int(grouped.map(lambda x: x[0][0]).max())
 
 def duplicatefreq(x, num_docs):
@@ -106,6 +108,18 @@ idfbyidf = inversedocfreq.sortBy(lambda x: x[1])
 print "\nInverse Document Frequency (sorted by idf):"
 print idfbyidf.collect()
 
+
+###########################################################
+# correct term frequency
+# total2 contains (word, freq) among the entire corpus
+word_count = float(total2.map(lambda x: x[1]).reduce(add))
+
+def tf_ratio_tuple(x):
+	return (x[0], float(x[1]) / word_count)
+
+tf = total2.map(tf_ratio_tuple)
+
+tf.map(lambda x:x[1]).reduce(add)
 
 
 
