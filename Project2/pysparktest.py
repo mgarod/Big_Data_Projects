@@ -18,6 +18,21 @@ conf = (SparkConf()
 )
 sc = SparkContext(conf = conf)
 
+def pretty_printer(x):
+    """
+    param x: An RDD
+
+    (k,v) can be either (2-tuple, single value) or (single key, single value)
+    """
+    l = x.collect()
+
+    if isinstance(l[0][0], tuple): # case: where key is a 2-tuple
+        for i in l:
+            print "({}, {}), {}".format(i[0][0], i[0][1], i[1])
+    else: # (key, value) are both single objects not collections
+        for j in l:
+            print "({}, {})".format(j[0], j[1])
+
 ###########################################################
 # WORD FREQUENCY BY DOCUMENT
 # (Key, Value) ---> ( tuple (docid, word), 1) )
@@ -42,6 +57,9 @@ print "Word Count Per Document (sorted by doc, then frequency):"
 sortbyfreq = grouped.sortBy(lambda x: x[1], ascending=False)
 sortbydoc = sortbyfreq.sortBy(lambda x: x[0][0])
 print sortbydoc.collect()
+
+print "TESTING PRETTY PRINTER"
+pretty_printer(sortbydoc)
 
 ###########################################################
 # TOTAL FREQUENCY IN CORPUS
@@ -109,3 +127,6 @@ idfbyidf = inversedocfreq.sortBy(lambda x: x[1])
 
 print "\nInverse Document Frequency (sorted by idf):"
 print idfbyidf.collect()
+
+print "TESTING PRETTY PRINTER"
+pretty_printer(idfbyidf)
