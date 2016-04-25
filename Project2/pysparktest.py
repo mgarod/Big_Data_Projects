@@ -56,12 +56,14 @@ print total2.sortBy(lambda x: x[1], ascending=False).collect()
 ###########################################################
 # TERM FREQUENCY RATIO
 # We must have the total number of documents
-# Make 
+#  and the names of all the documents as global variables
 total_docs = grouped.groupBy(lambda x: x[0][0]).count()
+doc_names = grouped.map(lambda x: x[0][0])
+doc_names = doc_names.intersection(doc_names).collect()
 
 def duplicatefreq(x, num_docs):
 	l = list()
-	for i in range(1, num_docs+1):
+	for i in doc_names:
 		tup = ((str(i), x[0]), x[1])
 		l.append(tup)
 	return l
@@ -112,14 +114,14 @@ print idfbyidf.collect()
 ###########################################################
 # correct term frequency
 # total2 contains (word, freq) among the entire corpus
-word_count = float(total2.map(lambda x: x[1]).reduce(add))
+# word_count = float(total2.map(lambda x: x[1]).reduce(add))
 
-def tf_ratio_tuple(x):
-	return (x[0], float(x[1]) / word_count)
+# def tf_ratio_tuple(x):
+# 	return (x[0], float(x[1]) / word_count)
 
-tf = total2.map(tf_ratio_tuple)
-print "\nTerm Frequency (sorted by frequency ratio):"
-print tf.sortBy(lambda x: x[1], ascending=False).collect()
+# tf = total2.map(tf_ratio_tuple)
+# print "\nTerm Frequency (sorted by frequency ratio):"
+# print tf.sortBy(lambda x: x[1], ascending=False).collect()
 
 
 
