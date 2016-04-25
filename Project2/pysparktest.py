@@ -109,21 +109,3 @@ idfbyidf = inversedocfreq.sortBy(lambda x: x[1])
 
 print "\nInverse Document Frequency (sorted by idf):"
 print idfbyidf.collect()
-
-
-###########################################################
-# correct term frequency
-# total2 contains (word, freq) among the entire corpus
-# word_count = float(total2.map(lambda x: x[1]).reduce(add))
-
-# def tf_ratio_tuple(x):
-# 	return (x[0], float(x[1]) / word_count)
-
-# tf = total2.map(tf_ratio_tuple)
-# print "\nTerm Frequency (sorted by frequency ratio):"
-# print tf.sortBy(lambda x: x[1], ascending=False).collect()
-
-
-
-
-
