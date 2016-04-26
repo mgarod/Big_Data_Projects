@@ -1,3 +1,4 @@
+
 """
 You must run this file with /usr/local/bin/spark-submit
 """
@@ -21,7 +22,6 @@ sc = SparkContext(conf = conf)
 def pretty_printer(x):
     """
     param x: An RDD
-
     (k,v) can be either (2-tuple, single value) or (single key, single value)
     """
     l = x.collect()
@@ -56,10 +56,7 @@ grouped = flat.reduceByKey(lambda x,y: x+y)  # Group By Key, sum frequency
 print "Word Count Per Document (sorted by doc, then frequency):"
 sortbyfreq = grouped.sortBy(lambda x: x[1], ascending=False)
 sortbydoc = sortbyfreq.sortBy(lambda x: x[0][0])
-print sortbydoc.collect()
-
-print "TESTING PRETTY PRINTER"
-pretty_printer(sortbydoc)
+#pretty_printer(sortbydoc)
 
 ###########################################################
 # TOTAL FREQUENCY IN CORPUS
@@ -69,7 +66,8 @@ total = grouped.map(lambda x: (x[0][1], x[1]))  # Extract tuple
 total2 = total.reduceByKey(lambda x,y: x+y)  # Total freq in all documents
 
 print "\nWord Count for the Corpus (sorted by frequency):"
-print total2.sortBy(lambda x: x[1], ascending=False).collect()
+final =  total2.sortBy(lambda x: x[1], ascending=False)
+pretty_printer(final)
 
 ###########################################################
 # TERM FREQUENCY RATIO
@@ -79,17 +77,18 @@ total_docs = grouped.groupBy(lambda x: x[0][0]).count()
 doc_names = grouped.map(lambda x: x[0][0])
 doc_names = doc_names.intersection(doc_names).collect()
 
+
 def duplicatefreq(x, num_docs):
-	l = list()
-	for i in doc_names:
-		tup = ((str(i), x[0]), x[1])
-		l.append(tup)
-	return l
+    l = list()
+    for i in doc_names:
+        tup = ((str(i), x[0]), x[1])
+        l.append(tup)
+    return l
 
 def get_ratio(x):
-	# The values of n1, n2 are not guaranteed to be in any order
-	n1, n2 = x[1]
-	return (x[0], float(min(n1,n2)) / float(max(n1,n2)))
+    # The values of n1, n2 are not guaranteed to be in any order
+    n1, n2 = x[1]
+    return (x[0], float(min(n1,n2)) / float(max(n1,n2)))
 
 # Make the following for EVERY VALUE of docid
 # (Key, Value) ---> ( tuple(docid, word) , totalfreq )
@@ -108,7 +107,7 @@ termfrequency = joined.map(get_ratio)
 print "\nTerm Frequency (sorted by docid, then frequency ratio):"
 tfbyfreq = termfrequency.sortBy(lambda x: x[1], ascending=False)
 tfbydoc = tfbyfreq.sortBy(lambda x: x[0][0])
-print tfbydoc.collect()
+pretty_printer(tfbydoc)
 
 ###########################################################
 # INVERSE DOCUMENT FREQUENCY
@@ -116,17 +115,63 @@ print tfbydoc.collect()
 # math.log(x) returns the natural logarithm of x
 
 def idf(x):
-	return (x[0], math.log(float(total_docs) / float(x[1])))
+    return (x[0], math.log(float(total_docs) / float(x[1])))
 
 # Emit (word, 1) representing this word appears in 1 document
 # There is no duplicates b/c we are starting from WORD FREQ. BY DOC. result
 words_1 = grouped.map(lambda x: (x[0][1], 1))
 num_docs_with_word = words_1.groupByKey().map(lambda x: (x[0], sum(x[1])))
 inversedocfreq = num_docs_with_word.map(idf)
-idfbyidf = inversedocfreq.sortBy(lambda x: x[1])
+idfbyidf = inversedocfreq.sortBy(lambda x: x[0])
 
 print "\nInverse Document Frequency (sorted by idf):"
-print idfbyidf.collect()
-
-print "TESTING PRETTY PRINTER"
 pretty_printer(idfbyidf)
+
+
+
+
+###########################################################
+# TERM FREQUENCY * INVERSE DOCUMENT FREQUENCY
+# Will create a mxn matrix: m ->docs and n ->terms using pandas
+import pandas as pd
+
+def unique(x):
+    l = list()
+    for i in x:
+        if not l.__contains__(i):
+            l.append(i)
+    return l
+
+
+A = tfbydoc.collect() #tuples(doc , term) , value
+B = idfbyidf.collect()# term, value
+
+###collect items to build matrix in pandas
+docs_index = map(lambda t:t[0][0], A)
+docs_index_t = map(lambda t:t[0][1], A)
+docs_index1 = unique(docs_index)
+docs_value = map(lambda t: t[1], A)
+terms_index = map(lambda t:t[0], B)
+terms_index_value = map(lambda t:t[1], B)
+#intial matrix mxn filled with 0
+blank_mat = pd.DataFrame(0, index=docs_index1, columns=terms_index)
+#fill in data from collected item
+counter= 0
+for i in docs_index:
+    blank_mat.loc[docs_index[counter],docs_index_t[counter]] = docs_value[counter]
+    counter+=1
+
+###Matrix complete filled in with correct values
+### now we do the tf *idf
+tf_mul_idf = blank_mat
+counter = 0
+for i in terms_index_value:
+    tf_mul_idf.loc[docs_index1[0]:,terms_index[counter]] = tf_mul_idf.loc[docs_index1[0]:,terms_index[counter]]*i
+    counter+=1
+
+###print result matrix
+###to refernce cell in matrix   matrix.loc[index label, column label]  example: tf_mul_idf.loc[doc1,t1]
+print "\n  Term Frequency (dot) Inverse Document Frequency:"
+print tf_mul_idf
+
+######################################################
