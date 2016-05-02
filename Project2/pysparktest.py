@@ -58,7 +58,7 @@ grouped = flat.reduceByKey(lambda x,y: x+y)  # Group By Key, sum frequency
 print "Word Count Per Document (sorted by doc, then frequency):"
 sortbyfreq = grouped.sortBy(lambda x: x[1], ascending=False)
 sortbydoc = sortbyfreq.sortBy(lambda x: x[0][0])
-#pretty_printer(sortbydoc)
+pretty_printer(sortbydoc)
 
 ###########################################################
 # TOTAL FREQUENCY IN CORPUS
@@ -142,10 +142,59 @@ def tfidf_calc(x):
 idftemp = idfbyidf.map(lambda x: duplicate_all(x, doc_names)).flatMap(lambda
 x: x)
 joinedtfidf = idftemp.join(termfrequency)
-tfidf = joinedtfidf.map(tfidf_calc).filter(lambda x: x[1] != 0.0)
-sortedtfidf = tfidf.sortBy(lambda x: x[0][1]).sortBy(lambda x: x[0][0])
+tfidftemp = joinedtfidf.map(tfidf_calc).filter(lambda x: x[1] != 0.0)
+sortedtfidf = tfidftemp.sortBy(lambda x: x[0][1]).sortBy(lambda x: x[0][0])
 print "\nTF*IDF (sorted by doc, then by term)"
 pretty_printer(sortedtfidf)
+###########################################################
+# term term vector
+
+
+def create_term_doc_tfidf(x):
+    return x[0][1], (x[0][0], x[1])
+
+
+def make_set(x):
+    s = set()
+    for i in x[1]:
+        s.add(i)
+    return x[0], s
+
+
+term_doc_tfidf = tfidftemp.map(create_term_doc_tfidf)
+print "term_doc_tfidf"
+pretty_printer(term_doc_tfidf)
+grouped_td_tfidf = term_doc_tfidf.groupByKey()
+print "grouped_td_tfidf"
+pretty_printer(grouped_td_tfidf)
+tfidf = grouped_td_tfidf.map(make_set)
+print "reduced_td_tfidf"
+pretty_printer(tfidf)
+###########################################################
+# term = 't2'
+# querytermset = tfidf.filter(lambda x: x[0] == term).collect()[0][1]
+#
+# def denominator(s):
+#     sum = 0
+#     for i in s:
+#         sum += i[1]**2
+#     sqrtsum = math.sqrt(sum)
+#     return sqrtsum
+#
+# def numerator(s1, s2):
+#     sum =
+#     for i in s1:
+#         for j in s2:
+#             if i[0] == j[0]:
+#
+#
+#
+# def term_similarity(x, q_termset):
+#
+#
+#
+# tfidf.map(lambda x: term_similarity(x, querytermset))
+
 
 ###########################################################
 # TERM FREQUENCY * INVERSE DOCUMENT FREQUENCY
