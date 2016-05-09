@@ -4,8 +4,7 @@ You must run this file with /usr/local/bin/spark-submit
 """
 from pyspark import SparkConf, SparkContext
 import sys
-import math
-from operator import add
+
 
 if len(sys.argv) != 2:
         print "Usage: spark-submit pysparktest.py <file>"
@@ -38,6 +37,8 @@ def pretty_printer(x):
 ###########################################################
 # WORD FREQUENCY BY DOCUMENT
 # (Key, Value) ---> ( tuple (docid, word), 1) )
+import math
+from operator import add
 
 def docid_word(x):
     l = list()
@@ -47,25 +48,28 @@ def docid_word(x):
         l.append(tup)
     return l
 
-# ex = sc.textFile("lx_data.txt")
-fullfile = sc.textFile(sys.argv[1])  # Open the file, splitting on '\n'
+fullfile = sc.textFile("lx_data.txt")
+#fullfile = sc.textFile(sys.argv[1])  # Open the file, splitting on '\n'
 splitid = fullfile.map(lambda x: x.split(' ', 1))  # Separate the doc id
 id_word_tuples = splitid.map(docid_word)  # Generate (docid, word) ---> 1
 flat = id_word_tuples.flatMap(lambda x: x)  # Remove partitions separating documents
 grouped = flat.reduceByKey(lambda x,y: x+y)  # Group By Key, sum frequency
-# (Key, Value) ---> ( tuple (docid, word), docfreq) )
+# (Key, Value) ---> ( tuple (docid, termid), docfreq) )
 
-print "Word Count Per Document (sorted by doc, then frequency):"
-sortbyfreq = grouped.sortBy(lambda x: x[1], ascending=False)
-sortbydoc = sortbyfreq.sortBy(lambda x: x[0][0])
-pretty_printer(sortbydoc)
+#print "Word Count Per Document (sorted by doc, then frequency):"
+#sortbyfreq = grouped.sortBy(lambda x: x[1], ascending=False)
+#sortbydoc = sortbyfreq.sortBy(lambda x: x[0][0])
+#pretty_printer(sortbydoc)
 
 ###########################################################
 # TOTAL FREQUENCY IN CORPUS
-# (Key, Value) ---> ( word, freq in that document )
+# grouped is ( (docid, termid), freq )
 
-total = grouped.map(lambda x: (x[0][1], x[1]))  # Extract tuple
-total2 = total.reduceByKey(lambda x,y: x+y)  # Total freq in all documents
+total = grouped.map(lambda x: (x[0][1], x[1]))  # Make (termid, freq)
+total2 = total.reduceByKey(lambda x,y: x+y)  # Group (termid, [f1 + ... + fn])
+
+test = grouped.map(lambda x: (x[0][1], (x[1], [x[0][0]])))
+test2 = test.reduceByKey(lambda x,y: (x[0]+y[0], x[1]+y[1]))
 
 print "\nWord Count for the Corpus (sorted by frequency):"
 final = total2.sortBy(lambda x: x[1], ascending=False)
