@@ -3,8 +3,17 @@ This test script counts the number of numbers (exclusively) divisible
 by 3, 5, and 15 from 0 to 1,000,000.
 You can simply copy and paste the following into the PySpark interpreter.
 """
-
+from pyspark import SparkConf, SparkContext
+import sys
 import psutil
+
+
+conf = (SparkConf()
+         .setMaster("local")
+         #.setAppName("My app")
+         #.set("spark.executor.memory", "4g")
+)
+sc = SparkContext(conf=conf)
 
 
 def fizzbuzz(x):
@@ -38,43 +47,3 @@ d = c.map(tuplefactory)
 e = d.groupByKey()
 f = e.map(sum_list)
 f.collect()
-
-#################################
-
-lines = sc.textFile("sherlock.txt")
-lines = lines.filter(lambda x: len(x) > 0)
-splitlines = lines.map(lambda x: x.split())
-
-lines = lines.flatMap()
-
-
-def counter(x):
-    l = list()
-    for i in x:
-        l.append((i, 1))
-    return l
-
-
-lines = lines.map(counter)
-
-##################################
-lines = list()
-
-with open("sherlock.txt") as f:
-    for line in f:
-        line = line.split()
-        line = sc.parallelize(line)
-        lines.append(line)
-
-for i in range(len(lines)):
-    lines[i] = lines[i].map(lambda x: (x, 1))
-
-for i in range(len(lines)):
-    lines[i] = lines[i].groupByKey().map(lambda x: (x[0], sum(list(x[1]))))
-
-
-
-
-
-
-
