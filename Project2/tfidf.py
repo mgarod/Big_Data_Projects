@@ -116,9 +116,55 @@ idf = idf_unflattened.flatMap(lambda x: x)
 # Make final tfidf matrix as ((docid, termid), tfidf)
 tfidf_temp = idf.union(termfreq)
 tfidf = tfidf_temp.reduceByKey(lambda x,y: x*y)
+tfidf = tfidf.filter(lambda x: x[1] != 0)
 
 # This is an alternative which could also be used, if more efficient
 # x = idf.join(termfreq)
 # y = x.map(lambda x: (x[0], x[1][0]*x[1][1]))
+# pretty_printer(tfidf)
 
-pretty_printer(tfidf)
+###############################################################################
+# Find similarity of "t3" to all other terms
+queryterm = "t3"
+
+# Make final tfidf matrix as ((docid, termid), tfidf)
+queryfilter = tfidf.filter(lambda x: x[0][1] == queryterm)
+otherfilter = tfidf.filter(lambda x: x[0][1] != queryterm)
+
+# Filtering beforehand prevents duplicates
+numer_cart = queryfilter.cartesian(otherfilter)
+
+# If docid matches docid, then do the multiply for the other termid
+def foo(x):
+    if x[0][0][0]==x[1][0][0]:
+        return (x[1][0][1], x[0][1]*x[1][1])
+
+# vectormult is (othertermid, query_idf*other_idf)
+vectormult = numer_cart.map(foo).filter(lambda x: x is not None)
+numerators = vectormult.reduceByKey(lambda x,y: x+y)
+
+###############################################################################
+
+# Square every element of the ifidf matrix as (termid, idf^2)
+v_squared = tfidf.map(lambda x: (x[0][1], x[1]*x[1]))
+# Sum every element associated a term as (termid, Sigma(idf^2))
+v_sum = v_squared.reduceByKey(lambda x, y: x+y)
+# Root every sum of a term as (term, sqrt(Sigma(idf^2))
+v_root = v_sum.mapValues(lambda x: math.sqrt(x))
+# v_root is (termid, magnitude of vector)
+
+# Separate the query vector from all other vectors
+query_denom = v_root.filter(lambda x: x[0] == queryterm)
+other_denom = v_root.filter(lambda x: x[0] != queryterm)
+
+# Bring the query vector to all other vectors
+denom_cart = query_denom.cartesian(other_denom)
+# Multiply the vectors as (othertermid, ||A||*||B|| )
+denominators = denom_cart.map(lambda x: (x[1][0], (x[0][1]*x[1][1])))
+
+# Inner join all numerators to their matching denominators
+fractions = numerators.join(denominators)
+
+# Complete the division of the fraction
+division = fractions.map(lambda x: (x[0], x[1][0]/x[1][1]))
+similarity = division.sortBy(lambda x: x[1], ascending=False)
