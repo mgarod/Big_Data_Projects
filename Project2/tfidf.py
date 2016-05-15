@@ -33,8 +33,9 @@ def docid_word(x):
     l = list()
     doc_id = x[0]
     for word in x[1].split():
-        tup = ((doc_id, word), 1)
-        l.append(tup)
+        if word.startswith("disease_") or word.startswith("gene_"):
+            tup = ((doc_id, word), 1)
+            l.append(tup)
     return l
 
 fullfile = sc.textFile("project2_data.txt")
