@@ -37,7 +37,7 @@ def docid_word(x):
         l.append(tup)
     return l
 
-fullfile = sc.textFile("lx_data.txt")
+fullfile = sc.textFile("project2_data.txt")
 #fullfile = sc.textFile(sys.argv[1])  # Open the file, splitting on '\n'
 splitid = fullfile.map(lambda x: x.split(' ', 1))  # Separate the doc id
 id_word_tuples = splitid.map(docid_word)  # Generate (docid, word) ---> 1
@@ -111,13 +111,18 @@ idf = idf_unflattened.flatMap(lambda x: x).filter(lambda x: x[1] > 0)
 ###############################################################################
 
 # Make tfidf matrix as ((docid, termid), tfidf)
-tfidf_temp = idf.join(termfreq)
-tfidf = tfidf_temp.mapValues(lambda x: x[0]*x[1])
+#tfidf_temp = idf.join(termfreq)
+#tfidf = tfidf_temp.mapValues(lambda x: x[0]*x[1])
+
+# This sequence is far more efficient than the join above
+tfidf_temp = idf.union(termfreq)
+tfidf = tfidf_temp.reduceByKey(lambda x,y: x*y)
+tfidf = tfidf.filter(lambda x: x[1] != 0)
 
 ###############################################################################
 # Find similarity of "t3" to all other terms
-queryterm = "t2"
-# queryterm = "gene_nmdars_gene"
+#queryterm = "t2"
+queryterm = "gene_nmdars_gene"
 
 # The tfidf matrix as ((docid, termid), tfidf)
 queryfilter = tfidf.filter(lambda x: x[0][1] == queryterm)
