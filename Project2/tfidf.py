@@ -118,6 +118,7 @@ idf = idf_unflattened.flatMap(lambda x: x).filter(lambda x: x[1] > 0)
 tfidf_temp = idf.union(termfreq)
 tfidf = tfidf_temp.reduceByKey(lambda x,y: x*y)
 tfidf = tfidf.filter(lambda x: x[1] != 0)
+tfidf.cache()
 
 ###############################################################################
 # Find similarity of "t3" to all other terms
