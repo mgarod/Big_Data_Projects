@@ -37,7 +37,7 @@ def docid_word(x):
         l.append(tup)
     return l
 
-fullfile = sc.textFile("lx_data.txt")
+fullfile = sc.textFile("extended.txt")
 #fullfile = sc.textFile(sys.argv[1])  # Open the file, splitting on '\n'
 splitid = fullfile.map(lambda x: x.split(' ', 1))  # Separate the doc id
 id_word_tuples = splitid.map(docid_word)  # Generate (docid, word) ---> 1
@@ -125,7 +125,8 @@ tfidf = tfidf.filter(lambda x: x[1] != 0)
 
 ###############################################################################
 # Find similarity of "t3" to all other terms
-queryterm = "t3"
+queryterm = "t1"
+#queryterm = "gene_nmdars_gene"
 
 # Make final tfidf matrix as ((docid, termid), tfidf)
 queryfilter = tfidf.filter(lambda x: x[0][1] == queryterm)
@@ -168,3 +169,4 @@ fractions = numerators.join(denominators)
 # Complete the division of the fraction
 division = fractions.map(lambda x: (x[0], x[1][0]/x[1][1]))
 similarity = division.sortBy(lambda x: x[1], ascending=False)
+pretty_printer(similarity)
