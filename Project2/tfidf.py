@@ -37,7 +37,7 @@ def docid_word(x):
         l.append(tup)
     return l
 
-fullfile = sc.textFile("extended.txt")
+fullfile = sc.textFile("lx_data.txt")
 #fullfile = sc.textFile(sys.argv[1])  # Open the file, splitting on '\n'
 splitid = fullfile.map(lambda x: x.split(' ', 1))  # Separate the doc id
 id_word_tuples = splitid.map(docid_word)  # Generate (docid, word) ---> 1
@@ -57,11 +57,6 @@ corpus_count = grouped.map(lambda x: (x[0][1], (x[1], [x[0][0]])))
 corpus_freq = corpus_count.reduceByKey(lambda x,y: (x[0]+y[0], x[1]+y[1]))
 
 ###############################################################################
-
-# Global Variables
-doc_names = grouped.groupBy(lambda x: x[0][0]).map(lambda x: x[0]).collect()
-num_docs = len(doc_names)
-
 # Unwind the doc list to make ((doc, term), calc_value) tuples for every doc
 # some_value will either be corpus_frequency, or idf
 # This output format will be standard for reducing
@@ -80,22 +75,24 @@ a = corpus_freq.map(generate)
 b = a.flatMap(lambda x: x)
 
 # Inner join keys with grouped to get ((doc, term), (doc_freq, corpus_freq))
-c = b.join(grouped)
+c = grouped.join(b)
 
 
-def get_ratio(x):
-    # The values of n1, n2 are not guaranteed to be in any order
-    n1, n2 = x[1]
-    return (x[0], float(min(n1,n2)) / float(max(n1,n2)))
+def calc_tf(x):
+    # tf is term freq, cf is corpus frequency
+    tf, cf = x[1]
+    return (x[0], float(tf) / float(cf))
 
 # termfreq is now in form ((docid, termid), termfreq)
-termfreq = c.map(get_ratio)
+termfreq = c.map(calc_tf)
 
 ###############################################################################
+# Global Variable, |D|
+NUM_DOCS = grouped.map(lambda x: x[0][0]).distinct().count()
 
-def calc_idf(x):
-    # num_docs is a global variable (we could make it a parameter)
-    return (x[0], ((math.log(float(num_docs) / float(x[1][0]))), x[1][1]))
+def calc_idf(x, n):
+    # NUM_DOCS is a global variable (we could make it a parameter)
+    return (x[0], ((math.log(float(n) / float(x[1][0]))), x[1][1]))
 
 # Make (termid, (1 doc appearance, [docid])) for every item in grouped
 trivial_doc_count = grouped.map(lambda x: (x[0][1], (1, [x[0][0]])))
@@ -104,31 +101,25 @@ trivial_doc_count = grouped.map(lambda x: (x[0][1], (1, [x[0][0]])))
 num_docs_per_term = trivial_doc_count.reduceByKey(lambda x, y: (x[0]+y[0], x[1]+y[1]))
 
 # Make (termid, (idf, [docid 1, ... , docid n]))
-idf_with_doc_list = num_docs_per_term.map(calc_idf)
+idf_with_doc_list = num_docs_per_term.map(lambda x: calc_idf(x, NUM_DOCS))
 
 # idf is now in form ((docid, termid), termfreq)
 idf_unflattened = idf_with_doc_list.map(generate)
 
-idf = idf_unflattened.flatMap(lambda x: x)
+idf = idf_unflattened.flatMap(lambda x: x).filter(lambda x: x[1] > 0)
 
 ###############################################################################
 
-# Make final tfidf matrix as ((docid, termid), tfidf)
-tfidf_temp = idf.union(termfreq)
-tfidf = tfidf_temp.reduceByKey(lambda x,y: x*y)
-tfidf = tfidf.filter(lambda x: x[1] != 0)
-
-# This is an alternative which could also be used, if more efficient
-# x = idf.join(termfreq)
-# y = x.map(lambda x: (x[0], x[1][0]*x[1][1]))
-# pretty_printer(tfidf)
+# Make tfidf matrix as ((docid, termid), tfidf)
+tfidf_temp = idf.join(termfreq)
+tfidf = tfidf_temp.mapValues(lambda x: x[0]*x[1])
 
 ###############################################################################
 # Find similarity of "t3" to all other terms
-queryterm = "t1"
-#queryterm = "gene_nmdars_gene"
+queryterm = "t2"
+# queryterm = "gene_nmdars_gene"
 
-# Make final tfidf matrix as ((docid, termid), tfidf)
+# The tfidf matrix as ((docid, termid), tfidf)
 queryfilter = tfidf.filter(lambda x: x[0][1] == queryterm)
 otherfilter = tfidf.filter(lambda x: x[0][1] != queryterm)
 
@@ -136,12 +127,12 @@ otherfilter = tfidf.filter(lambda x: x[0][1] != queryterm)
 numer_cart = queryfilter.cartesian(otherfilter)
 
 # If docid matches docid, then do the multiply for the other termid
-def foo(x):
+def dotprod(x):
     if x[0][0][0]==x[1][0][0]:
         return (x[1][0][1], x[0][1]*x[1][1])
 
 # vectormult is (othertermid, query_idf*other_idf)
-vectormult = numer_cart.map(foo).filter(lambda x: x is not None)
+vectormult = numer_cart.map(dotprod).filter(lambda x: x is not None)
 numerators = vectormult.reduceByKey(lambda x,y: x+y)
 
 ###############################################################################

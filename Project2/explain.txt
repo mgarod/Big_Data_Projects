@@ -1,0 +1,219 @@
+# Authors: Michael Garod, Ryan Kallicharan
+# Professor: Lei Xie
+# Description: Project #2
+
+
+1. Parallelizing the data file gives a single RDD of strings
+[u'doc1 t1 t2 t3 t2 t1 t2',
+u'doc2 t2 t1 t4 t4',
+u'doc3 t1 t3 t5 t6 t7']
+
+
+2. Separate the document name and term, and generate ((docid, term), 1) for every term that exists in that document
+((u'doc1', u't1'), 1)
+((u'doc1', u't2'), 1)
+...
+((u'doc3', u't6'), 1)
+((u'doc3', u't7'), 1)
+
+
+3. With 2, reduce by key, summing values which gives
+	((docid, term), term_freq_in_doc)
+((u'doc3', u't3'), 1)
+((u'doc2', u't4'), 2)
+...
+((u'doc1', u't2'), 3)
+((u'doc2', u't1'), 1)
+
+
+4. Using the result of step 3, map to (term, (term_freq_in_doc, [doc_id]))
+(u't1', (2, [u'doc1']))
+(u't3', (1, [u'doc1']))
+...
+(u't6', (1, [u'doc3']))
+(u't2', (3, [u'doc1']))
+
+
+5. With 4, reduce by key which sums the term_freq_in_doc and combines doc_id lists. This is the corpus frequency of every term.
+(u't6', (1, [u'doc3']))
+(u't2', (4, [u'doc2', u'doc1']))
+...
+(u't3', (2, [u'doc3', u'doc1']))
+(u't1', (4, [u'doc3', u'doc1', u'doc2']))
+
+
+6. Use 5 to generate ((docid, term), corpus frequency)
+	(see function: generate)
+((u'doc3', u't6'), 1)
+((u'doc2', u't4'), 2)
+...
+((u'doc2', u't2'), 4)
+((u'doc3', u't7'), 1)
+
+
+7. Inner join 3 with 6 which makes tuples of the form
+	((docid, term), (corpus_freq, term_in_doc_freq))
+((u'doc3', u't3'), (2, 1))
+((u'doc2', u't4'), (2, 2))
+...
+((u'doc1', u't1'), (4, 2))
+((u'doc3', u't7'), (1, 1))
+
+
+8. With 7, map the calc_tf function to all tuples (see function: calc_tf). This is the term frequency of each term in each document
+((u'doc1', u't2'), 0.75)
+((u'doc3', u't5'), 1.0)
+...
+((u'doc2', u't2'), 0.25)
+((u'doc1', u't3'), 0.5)
+
+
+9. Use 3 to find the total number of documents by emitting/mapping all found doc names, then find distinct, then count size of that RDD. This is the cardinality of big-D. (i.e. 3 in this toy data set)
+
+
+10. Using 3, map as (term, (1, [doc_id])) where 1 indicates that the term appeared in this (one) document. The RDD at 3 has been reduced by term, so there is no chance of double counting a term appearing in the same document twice.
+(u't4', (1, [u'doc2']))
+(u't7', (1, [u'doc3']))
+...
+(u't5', (1, [u'doc3']))
+(u't1', (1, [u'doc1']))
+
+
+11. Reduce 10 by term, summing document appearances, and joining the list of documents the term appeared in.
+(u't7', (1, [u'doc3']))
+(u't5', (1, [u'doc3']))
+...
+(u't3', (2, [u'doc3', u'doc1']))
+(u't1', (3, [u'doc3', u'doc1', u'doc2']))
+
+
+12. Using 11, as well as the constant, 'total number of documents' found at 9, we calculate the idf as (term, (idf, [doc1, ... , docn]))
+(see function: calc_idf)
+(u't2', (0.4054651081081644, [u'doc2', u'doc1']))
+(u't7', (1.0986122886681098, [u'doc3']))
+...
+(u't5', (1.0986122886681098, [u'doc3']))
+(u't3', (0.4054651081081644, [u'doc3', u'doc1']))
+
+
+13. Use 12 to map ((docid, term), idf), and filter out those idf that are 0
+(see function: generate)
+((u'doc3', u't5'), 1.0986122886681098)
+((u'doc3', u't3'), 0.4054651081081644)
+...
+((u'doc1', u't3'), 0.4054651081081644)
+((u'doc2', u't4'), 1.0986122886681098)
+
+
+14. Inner join the TF RDD(8) and IDF RDD (13), since both are of the form ((docid, term), tf|idf). The join RDD is of the form ((docid, term), (idf, tf))
+((u'doc1', u't3'), (0.4054651081081644, 0.5))
+((u'doc3', u't3'), (0.4054651081081644, 0.5))
+...
+((u'doc2', u't4'), (1.0986122886681098, 1.0))
+((u'doc2', u't2'), (0.4054651081081644, 0.25))
+
+
+15. Using 14, map the values of the join RDD to multiply idf and tf as
+((docid, term), tf*idf). This is the (non-zero valued) tfidf matrix.
+((u'doc2', u't2'), 0.1013662770270411)
+((u'doc3', u't6'), 1.0986122886681098)
+...
+((u'doc1', u't2'), 0.3040988310811233)
+((u'doc1', u't3'), 0.2027325540540822)
+
+
+16. Given a specific query term(e.g. "t2" in this toy data set), use 15 to create an RDD of all tfidf of that query term, and an RDD of all tfidf not associated with that query term.
+[((u'doc2', u't2'), 0.1013662770270411),
+((u'doc1', u't2'), 0.3040988310811233)]
+
+[((u'doc3', u't5'), 1.0986122886681098),
+((u'doc1', u't3'), 0.2027325540540822),
+((u'doc3', u't3'), 0.2027325540540822),
+((u'doc2', u't4'), 1.0986122886681098),
+((u'doc3', u't6'), 1.0986122886681098),
+((u'doc3', u't7'), 1.0986122886681098)]
+
+
+17. Use the two RDDs from 16 to generate the cross join/cartesian product of each query term tfidf, and each other tfidf value. Filtering into 2 RDDs at step 16 ensures that no entry is joined with itself.
+(((u'doc2', u't2'), 0.1013662770270411),((u'doc3', u't6'), 1.0986122886681098))
+(((u'doc2', u't2'), 0.1013662770270411),((u'doc3', u't7'), 1.0986122886681098))
+...
+(((u'doc1', u't2'), 0.3040988310811233),((u'doc3', u't5'), 1.0986122886681098))
+(((u'doc1', u't2'), 0.3040988310811233),((u'doc1', u't3'), 0.2027325540540822))
+
+
+18. Using 17, if any two entires correspond to the same document, map the entry as (otherterm, query_tfidf*other_tfidf), else throw away the value (see function: dotprod)
+(u't4', 0.11136223759844326)
+(u't3', 0.06165073270993704)
+
+
+19. Using 18, reduce by key, summing values as (otherterm, dotproduct). This is the dot product as shown in the cosine similarity function. (i.e. numerator)
+(u't4', 0.11136223759844326)
+(u't3', 0.06165073270993704)
+
+
+20. Using 15, the tfidf matrix, map each term (discarding the docid), and square every element of the matrix 
+(u't5', 1.206948960812582)
+(u't3', 0.041100488473291355)
+(u't3', 0.041100488473291355)
+(u't4', 1.206948960812582)
+(u't2', 0.010275122118322839)
+(u't6', 1.206948960812582)
+(u't2', 0.09247609906490556)
+(u't7', 1.206948960812582)
+
+
+21. Using 20, reduce by term, summing the tfidf squares
+(u't6', 1.206948960812582)
+(u't7', 1.206948960812582)
+(u't4', 1.206948960812582)
+(u't5', 1.206948960812582)
+(u't2', 0.1027512211832284)
+(u't3', 0.08220097694658271)
+
+
+22. Using 21, take the square root of every value
+(u't6', 1.0986122886681098)
+(u't7', 1.0986122886681098)
+(u't4', 1.0986122886681098)
+(u't5', 1.0986122886681098)
+(u't2', 0.32054831333705125)
+(u't3', 0.2867071274778196)
+
+
+23. Using 22, create an RDD of the root-sum-of-squares of the query term (an RDD of 1 entry), and an RDD of all root-sum-of-squares not associated with the query term.
+[(u't2', 0.32054831333705125)]
+
+[(u't6', 1.0986122886681098),
+(u't7', 1.0986122886681098),
+(u't4', 1.0986122886681098),
+(u't5', 1.0986122886681098),
+(u't3', 0.2867071274778196)]
+
+
+24. Using the two RDDs from 23, generate the cross join/cartesian product as
+	((query term, root-sum-of-squares), (otherterm, root-sum-of-squares))
+((u't2', 0.32054831333705125), (u't6', 1.0986122886681098))
+((u't2', 0.32054831333705125), (u't7', 1.0986122886681098))
+((u't2', 0.32054831333705125), (u't4', 1.0986122886681098))
+((u't2', 0.32054831333705125), (u't5', 1.0986122886681098))
+((u't2', 0.32054831333705125), (u't3', 0.2867071274778196))
+
+
+25. Using 24, map as (otherterm, queryRSoS*otherRSoS). This is the full product of magnitudes found in the cosine similarity function. (i.e. denominator)
+(u't6', 0.35215831614392024)
+(u't7', 0.35215831614392024)
+(u't4', 0.35215831614392024)
+(u't5', 0.35215831614392024)
+(u't3', 0.09190348613472601)
+
+
+26. Inner join 19 (numerators) with 25 (denominators) as
+	(otherterm, (numerator, denominator))
+(u't4', (0.11136223759844326, 0.35215831614392024))
+(u't3', (0.06165073270993704, 0.09190348613472601))
+
+
+27. Using 26, map as (otherterm, numerator/denominator), and sort by value descending. This is the final cosine similarity of the query term to this other term.
+(u't3', 0.670820393249937)                          
+(u't4', 0.31622776601683794)
