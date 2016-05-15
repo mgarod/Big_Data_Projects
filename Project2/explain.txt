@@ -9,7 +9,7 @@ u'doc2 t2 t1 t4 t4',
 u'doc3 t1 t3 t5 t6 t7']
 
 
-2. Separate the document name and term, and generate ((docid, term), 1) for every term that exists in that document
+2. Separate the document name and term, and generate ((docid, term), 1) for every term that exists in that document. In the full data set, only terms that start with "disease_" or "gene_" will be generated as terms.
 ((u'doc1', u't1'), 1)
 ((u'doc1', u't2'), 1)
 ...
