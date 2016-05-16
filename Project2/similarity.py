@@ -4,6 +4,9 @@ You must run this file with /usr/local/bin/spark-submit
 from pyspark import SparkConf, SparkContext
 import sys
 
+import boto
+from boto.s3.key import Key
+
 
 # if len(sys.argv) != 2:
 #         print "Usage: spark-submit pysparktest.py <file>"
@@ -38,11 +41,28 @@ def docid_word(x):
             l.append(tup)
     return l
 
-fullfile = sc.textFile("project2_data.txt")
-#fullfile = sc.textFile(sys.argv[1])  # Open the file, splitting on '\n'
-splitid = fullfile.map(lambda x: x.split(' ', 1))  # Separate the doc id
-id_word_tuples = splitid.map(docid_word)  # Generate (docid, word) ---> 1
-flat = id_word_tuples.flatMap(lambda x: x)  # Remove partitions separating documents
+conn = boto.connect_s3('AKIAJDU7XXQHS3IKN27Q','qDOmwl/37w2acYu3OmsyR7OWkVL4lq+fQddfgRZX')
+bucket = conn.get_bucket('fizzbuzz')
+k = Key(bucket)
+k.key = 'project2_data.txt'
+dataFile = k.key
+
+# The file is being read from Amazon S3, but the process is run locally
+fullfile = sc.textFile(dataFile)
+
+# Use the following if you want to read the data locally as well
+# fullfile = sc.textFile('project2_data.txt')
+
+# Separate the doc id
+splitid = fullfile.map(lambda x: x.split(' ', 1))
+
+# Generate a list of ((docid, term), 1) per document
+id_word_tuples = splitid.map(docid_word)
+
+# Remove list partitions. We now have many pairs like ((docid, term), 1)
+flat = id_word_tuples.flatMap(lambda x: x)
+
+# Reduce by key, to get term frequency per document
 grouped = flat.reduceByKey(lambda x,y: x+y)  # Group By Key, sum frequency
 
 # END RESULT: ((docid, termid), term_freq_in_doc)
@@ -80,9 +100,8 @@ c = grouped.join(b)
 
 
 def calc_tf(x):
-    # tf is term freq, cf is corpus frequency
-    tf, cf = x[1]
-    return (x[0], float(tf) / float(cf))
+    # x[1][0] is term freq, x[1][1] is corpus frequency
+    return (x[0], float(x[1][0]) / float(x[1][1]))
 
 # termfreq is now in form ((docid, termid), termfreq)
 termfreq = c.map(calc_tf)

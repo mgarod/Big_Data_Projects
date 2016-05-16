@@ -122,7 +122,7 @@ u'doc3 t1 t3 t5 t6 t7']
 ((u'doc1', u't3'), 0.2027325540540822)
 
 
-16. Given a specific query term(e.g. "t2" in this toy data set), use 15 to create an RDD of all tfidf of that query term, and an RDD of all tfidf not associated with that query term.
+16. Given a specific query term(e.g. "t2" in this toy data set), use 15 to create an RDD of all tfidf of that query term, and an RDD of all tfidf not associated with that query term. (In the project data, we would filter out the query term, gene_nmdars_gene, in the first RDD, and filter only diseases in the second RDD)
 [((u'doc2', u't2'), 0.1013662770270411),
 ((u'doc1', u't2'), 0.3040988310811233)]
 
@@ -181,7 +181,7 @@ u'doc3 t1 t3 t5 t6 t7']
 (u't3', 0.2867071274778196)
 
 
-23. Using 22, create an RDD of the root-sum-of-squares of the query term (an RDD of 1 entry), and an RDD of all root-sum-of-squares not associated with the query term.
+23. Using 22, create an RDD of the root-sum-of-squares of the query term (an RDD of 1 entry), and an RDD of all root-sum-of-squares not associated with the query term. (In the project data, we would filter out the query term, gene_nmdars_gene, in the first RDD, and filter only diseases in the second RDD)
 [(u't2', 0.32054831333705125)]
 
 [(u't6', 1.0986122886681098),
@@ -200,7 +200,7 @@ u'doc3 t1 t3 t5 t6 t7']
 ((u't2', 0.32054831333705125), (u't3', 0.2867071274778196))
 
 
-25. Using 24, map as (otherterm, queryRSoS*otherRSoS). This is the full product of magnitudes found in the cosine similarity function. (i.e. denominator)
+25. Using 24, map as (otherterm, queryRSoS*otherRSoS). This is the product of magnitudes found in the cosine similarity function. (i.e. denominator)
 (u't6', 0.35215831614392024)
 (u't7', 0.35215831614392024)
 (u't4', 0.35215831614392024)
