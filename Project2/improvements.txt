@@ -1,0 +1,2 @@
+We could improve the spark algorithm in the similarity.py script by eliminating loops from the entirely. We do not loop over entire collections, which would violate the ideas of the distributed algorithm, but we do create mapping functions which contain loops therein. It may be beneficial to eliminate these loops and rethink the functions without them.
+
