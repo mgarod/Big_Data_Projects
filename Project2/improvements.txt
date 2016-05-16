@@ -15,3 +15,7 @@ We could improve the spark algorithm in the similarity.py script by eliminating 
 The speed of the algorithm could be improved by more caching. Currently we only cache the TF-IDF matrix, because it is used several more times throughout the script. If space is not that important, more intermediate RDDs could be cached.
 
 On the way to our final result, we generate many intermediate RDDs. With some more time and thorough testing, we could put more RDD methods in a single step, which may improve speed of the script.
+
+An improvement to make our code run faster when handling large amount of data on multiple node on the 
+  amazon web services, it to cache the data in the node's ram. This will increase the speed when calling
+  upon distributed data.
