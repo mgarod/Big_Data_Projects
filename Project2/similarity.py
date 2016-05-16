@@ -119,6 +119,8 @@ idf = idf_unflattened.flatMap(lambda x: x).filter(lambda x: x[1] > 0)
 tfidf_temp = idf.union(termfreq)
 tfidf = tfidf_temp.reduceByKey(lambda x,y: x*y)
 tfidf = tfidf.filter(lambda x: x[1] != 0)
+
+# This RDD is accesses frequently, so cache it for improved performance
 tfidf.cache()
 
 ###############################################################################
@@ -128,7 +130,7 @@ queryterm = "gene_nmdars_gene"
 
 # The tfidf matrix as ((docid, termid), tfidf)
 queryfilter = tfidf.filter(lambda x: x[0][1] == queryterm)
-otherfilter = tfidf.filter(lambda x: x[0][1] != queryterm)
+otherfilter = tfidf.filter(lambda x: x[0][1].startswith('disease_'))
 
 # Filtering beforehand prevents duplicates
 numer_cart = queryfilter.cartesian(otherfilter)
@@ -154,7 +156,7 @@ v_root = v_sum.mapValues(lambda x: math.sqrt(x))
 
 # Separate the query vector from all other vectors
 query_denom = v_root.filter(lambda x: x[0] == queryterm)
-other_denom = v_root.filter(lambda x: x[0] != queryterm)
+other_denom = v_root.filter(lambda x: x[0].startswith('disease_'))
 
 # Bring the query vector to all other vectors
 denom_cart = query_denom.cartesian(other_denom)
