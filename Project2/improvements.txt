@@ -1,6 +1,6 @@
 IMPLEMENTATION:
 
-Required Libraries: boto
+Required Libraries: boto, pyspark
 
 The python script, similarity.py, is implemented in a procedural way, without loops and only using RDD methods.
 
