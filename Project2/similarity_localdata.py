@@ -4,8 +4,8 @@ You must run this file with /usr/local/bin/spark-submit
 from pyspark import SparkConf, SparkContext
 import sys
 
-import boto
-from boto.s3.key import Key
+# import boto
+# from boto.s3.key import Key
 
 
 # if len(sys.argv) != 2:
@@ -41,17 +41,17 @@ def docid_word(x):
             l.append(tup)
     return l
 
-conn = boto.connect_s3('AKIAJDU7XXQHS3IKN27Q','qDOmwl/37w2acYu3OmsyR7OWkVL4lq+fQddfgRZX')
-bucket = conn.get_bucket('fizzbuzz')
-k = Key(bucket)
-k.key = 'project2_data.txt'
-dataFile = k.key
+# conn = boto.connect_s3('AKIAJDU7XXQHS3IKN27Q','qDOmwl/37w2acYu3OmsyR7OWkVL4lq+fQddfgRZX')
+# bucket = conn.get_bucket('fizzbuzz')
+# k = Key(bucket)
+# k.key = 'project2_data.txt'
+# dataFile = k.key
 
-# The file is being read from Amazon S3, but the process is run locally
-fullfile = sc.textFile(dataFile)
+# # The file is being read from Amazon S3, but the process is run locally
+# fullfile = sc.textFile(dataFile)
 
-# Use the following if you want to read the data locally as well
-# fullfile = sc.textFile('project2_data.txt')
+# Use the following if you want to read the data locally
+fullfile = sc.textFile('project2_data.txt')
 
 # Separate the doc id
 splitid = fullfile.map(lambda x: x.split(' ', 1))
@@ -232,6 +232,9 @@ division = fractions.map(lambda x: (x[0], x[1][0]/x[1][1]))
 # Sort descending
 similarity = division.sortBy(lambda x: x[1], ascending=False)
 
+
+print "Given the query: \'{}\'".format(queryterm)
+print "The following are the most similar diseases by cosine similarity\n"
 # Print to std::out, where each element is has a new line
 pretty_printer(similarity)
 

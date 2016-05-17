@@ -1,3 +1,6 @@
+Given the query: 'gene_nmdars_gene'
+The following are the most similar diseases by cosine similarity
+
 (u'disease_ventral_tegmental_area_disease', 0.1577200744691279)
 (u'disease_huntington_disease_disease', 0.13685715184712188)
 (u'disease_ls_disease', 0.13621485908225506)

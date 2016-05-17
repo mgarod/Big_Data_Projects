@@ -1,6 +1,6 @@
 IMPLEMENTATION:
 
-Required Libraries: boto
+Required Libraries: pyspark, boto (for Amazon S3 connection)
 
 The python script, similarity.py, is implemented in a procedural way, without loops and only using RDD methods.
 
@@ -15,3 +15,5 @@ We could improve the spark algorithm in the similarity.py script by eliminating 
 The speed of the algorithm could be improved by more caching. Currently we only cache the TF-IDF matrix, because it is used several more times throughout the script. If space is not that important, more intermediate RDDs could be cached.
 
 On the way to our final result, we generate many intermediate RDDs. With some more time and thorough testing, we could put more RDD methods in a single step, which may improve speed of the script.
+
+We feel highly skilled in our MapReduce algorithm design. Given enough time, we believe that we could have developed the document-document similarity ranking as well.
