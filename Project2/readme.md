@@ -34,9 +34,9 @@ time spark-submit similarity_s3.py > GAROD_KALLICHARRAN_output.txt
 
 
 ### More Information
-Please see 'algorithm_design.txt' for step-by-step walkthrough of the MapReduce algorithm
+Please see 'algorithm_design.txt' for a step-by-step walkthrough of the MapReduce algorithm
 
-Please see 'UsingAmazonWebServices.pdf' for step-by-step walkthrough of how we set up and execute our algorithm on Amazon Web Services
+Please see 'UsingAmazonWebServices.pdf' for a step-by-step walkthrough of how we set up and execute our algorithm on Amazon Web Services
 
 Please see 'improvements.txt' for the description of our implementation and potential improvements for the algorithm.
 
