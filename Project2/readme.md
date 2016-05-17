@@ -1,12 +1,14 @@
 # Big Data Project #2 - Semantic Similarity
 CSCI 493.71, Spring 2016, Professor Lei Xie
 
-This file is best viewed as a GitHub Markdown 
+This file is best viewed as a GitHub Markdown which can be viewed here:
 [Link](https://github.com/mgarod/My_First_Website/blob/master/readme.md)
+
 
 ### Authors
 - Michael Garod
 - Ryan Kallicharran
+
 
 ### Build Instructions
 Required libraries: pyspark, boto (for Amazon S3 connection)
@@ -30,12 +32,14 @@ The scripts print results to std::out. If you wish to save results to a file, pl
 time spark-submit similarity_s3.py > GAROD_KALLICHARRAN_output.txt
 ```
 
+
 ### More Information
 Please see 'algorithm_design.txt' for step-by-step walkthrough of the MapReduce algorithm
 
 Please see 'UsingAmazonWebServices.pdf' for step-by-step walkthrough of how we set up and execute our algorithm on Amazon Web Services
 
 Please see 'improvements.txt' for the description of our implementation and potential improvements for the algorithm.
+
 
 ### Resources
 ##### Tutorial video for basics of Functional Programming and Apache Spark/PySpark
