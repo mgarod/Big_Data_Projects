@@ -17,3 +17,5 @@ The speed of the algorithm could be improved by more caching. Currently we only 
 On the way to our final result, we generate many intermediate RDDs. With some more time and thorough testing, we could put more RDD methods in a single step, which may improve speed of the script.
 
 We feel highly skilled in our MapReduce algorithm design. Given enough time, we believe that we could have developed the document-document similarity ranking as well.
+
+An improvement to make our code run faster on large amounts of data with multiple Amazon Web Services nodes, would be to cache the data in the node's ram. This will increase the speed when calling upon distributed data.
