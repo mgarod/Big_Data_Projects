@@ -22,7 +22,7 @@ sc = SparkContext(conf=conf)
 
 def pretty_printer(x):
     """
-    param x: An RDD
+    :param x: An RDD
     (k,v) can be either (2-tuple, single value) or (single key, single value)
     """
     l = x.collect()
@@ -33,6 +33,14 @@ def pretty_printer(x):
 import math
 
 def docid_word(x):
+    """
+    Extract each single word in the document and output a list of tuples
+        of the form ['((docid, term), 1)', ... ,'((docid, term), 1)']
+
+    :param x: An element within an RDD: (docid, "str_1 str_2 ... str_n").
+        The right hand value is a large space delimited string.
+    :return l: A list of zero or more '((docid, term), 1)' tuples
+    """
     l = list()
     doc_id = x[0]
     for word in x[1].split():
